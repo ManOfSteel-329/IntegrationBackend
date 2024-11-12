@@ -1,8 +1,12 @@
 package com.funnelsensai.core.security;
 
+import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.security.util.JwtUtil;
+import com.funnelsensai.core.util.CookieUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,31 +21,42 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
+    @Value("${jwt.access.token.expiry}")
+    private int accessTokenExpiry;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil) {
+    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
         this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String accessToken = CookieUtils.getTokenFromCookie(request, "accessToken");
+        String refreshToken = CookieUtils.getTokenFromCookie(request, "refreshToken");
 
-        String token = getTokenFromRequest(request);
-        if (token != null && jwtUtil.validateToken(token)) {
-            String username = jwtUtil.getUsernameFromToken(token);
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    username, null, null);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (accessToken != null) {
+            if (jwtUtil.isTokenExpired(accessToken) && refreshToken != null && jwtUtil.validateToken(refreshToken)) {
+                // Access token is expired but refresh token is valid; generate new access token
+                String username = jwtUtil.getUsernameFromToken(refreshToken);
+                String newAccessToken = jwtUtil.generateAccessToken(username);
+                CookieUtils.setCookie(response, "accessToken", newAccessToken, accessTokenExpiry);
+
+                accessToken = newAccessToken; // Update to use the new token
+            }
+
+            if (jwtUtil.validateToken(accessToken)) {
+                String username = jwtUtil.getUsernameFromToken(accessToken);
+                User user = (User) userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        user, null, null);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
         filterChain.doFilter(request, response);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+
 }

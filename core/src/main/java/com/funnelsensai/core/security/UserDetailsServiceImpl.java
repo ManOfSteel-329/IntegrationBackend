@@ -1,7 +1,8 @@
 package com.funnelsensai.core.security;
 
+import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.repository.UserRepository;
-import org.springframework.security.core.userdetails.User;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
