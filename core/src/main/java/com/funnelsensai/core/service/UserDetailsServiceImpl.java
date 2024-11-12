@@ -1,4 +1,4 @@
-package com.funnelsensai.core.security;
+package com.funnelsensai.core.service;
 
 import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.repository.UserRepository;

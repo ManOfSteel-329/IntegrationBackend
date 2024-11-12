@@ -48,11 +48,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(accessToken)) {
                 String username = jwtUtil.getUsernameFromToken(accessToken);
-                User user = (User) userDetailsService.loadUserByUsername(username);
+                User user = (User) userDetailsService.loadUserByUsername(username); // Note: THIS IS INEFFICIENT!!! At some point we should consider using caching
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         user, null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication); // This is the code that actually "logs the user in"
             }
         }
         filterChain.doFilter(request, response);

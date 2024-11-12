@@ -1,5 +1,6 @@
 package com.funnelsensai.core.security;
 
+import com.funnelsensai.core.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -70,7 +71,7 @@ public class SecurityConfig {
         var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(List.of(
-                "https://funnelsensai.com",
+                "https://funnelsensai.com", // front-end URL   (eg back-end URL: https://api.funnelsensai.com)
                 "https://dev.funnelsensai.com",
                 "http://localhost:5173"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
