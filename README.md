@@ -12,8 +12,8 @@
     spring.jpa.show-sql=true
 
     # JWT Configuration
-    jwt.secret=your_secret_key
-    jwt.access.token.expiry=600000    # 10 minutes
-    jwt.refresh.token.expiry=2592000000 # 30 days
+    jwt.secret=7c22b17c7217c20121bba9ea44c4b475337b33544251960215f1009c4b480768f44992682a051cadab310a1bbf69a57be5df2908bad70cf9dbe222cb72e7becc
+    jwt.access.token.expiry=600    
+    jwt.refresh.token.expiry=2592000
  
 </details>
