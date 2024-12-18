@@ -16,6 +16,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Mockito.verify;
@@ -172,4 +173,40 @@ public class CalendarEventsTest {
         assertEquals(401, response.statusCode());
         verify(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
     }
+
+
+    @Test
+    @DisplayName("Should return a 200 after returning an empty events array")
+    public void testEmptyEventsArray() throws Exception {
+         String emptyEventsResponseBody = """
+                {
+                    "events": []
+                }
+                """;
+
+        Map<String, String> queryParams = Map.of(
+                "locationId", LOCATION_ID,
+                "startTime", START_TIME,
+                "endTime", END_TIME
+        );
+
+        HttpRequest request = buildRequest(queryParams);
+
+        when(httpResponse.statusCode()).thenReturn(200);
+        when(httpResponse.body()).thenReturn(emptyEventsResponseBody);
+        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+        assertTrue(isValidJson(response.body()));
+
+        Map<String, Object> parsedResponseBody = objectMapper.readValue(response.body(), Map.class);
+
+        assertTrue(parsedResponseBody.containsKey("events"));
+        assertTrue(((List<?>) parsedResponseBody.get("events")).isEmpty());
+
+        verify(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+    }
+
 }
