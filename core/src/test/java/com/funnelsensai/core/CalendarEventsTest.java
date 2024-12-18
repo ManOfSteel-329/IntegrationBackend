@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import static net.minidev.json.JSONValue.isValidJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,7 +17,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.Map;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -93,14 +91,6 @@ public class CalendarEventsTest {
                 .build();
     }
 
-    private boolean isValidJson(String json) {
-        try {
-            objectMapper.readTree(json);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
 @Test
 @DisplayName("Should mock a successful endpoint call")
