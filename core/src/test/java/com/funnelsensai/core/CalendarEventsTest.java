@@ -3,6 +3,7 @@ package com.funnelsensai.core;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -101,6 +102,7 @@ public class CalendarEventsTest {
     }
 
 @Test
+@DisplayName("Should mock a successful endpoint call")
     public void testSuccessfulGetCalendarEvents() throws Exception {
 
         Map<String, String> queryParams = Map.of(
@@ -123,6 +125,7 @@ public class CalendarEventsTest {
     }
 
 @Test
+@DisplayName("Should mock a failed endpoint call due to a missing required parameter")
     public void testMissingRequiredParams() throws Exception {
 
         Map<String, String> queryParams = Map.of(
@@ -143,6 +146,7 @@ public class CalendarEventsTest {
 
 
     @Test
+    @DisplayName("Should mock a failed endpoint call due to an invalid Authorization token")
     public void testInvalidAuthToken() throws Exception {
         Map<String, String> queryParams = Map.of(
                 "locationId", LOCATION_ID,
