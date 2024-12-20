@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.funnelsensai.core.domain.User;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,16 +38,16 @@ public class CalendarEvent {
     @JsonProperty("rrule")
     private String rrule;
     @JsonProperty("startTime")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private LocalDateTime startTime;
     @JsonProperty("endTime")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private LocalDateTime endTime;
     @JsonProperty("dateAdded")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private LocalDateTime dateAdded;
     @JsonProperty("dateUpdated")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private LocalDateTime dateUpdated;
     @JsonProperty("assignedResources")
     private List<String> assignedResources;

@@ -32,7 +32,7 @@ public class CalendarEventsTest {
     public String mockResponseBody;
 
     private static final String BASE_URL = "https://services.leadconnectorhq.com/calendars/events";
-    private static final String AUTH_TOKEN = "test-token-123";
+    private static final String AUTH_TOKEN = "9c48df2694a849b6089f9d0d3513efe";
     private static final String API_VERSION = "2021-04-15";
     private static final String LOCATION_ID = "0007BWpSzSwfiuSl0tR2";
     private static final String START_TIME = "1680373800000";
