@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -115,7 +114,7 @@ public class CalendarEventsTest {
                 LOCATION_ID,
                 START_TIME,
                 END_TIME,
-                "BqTwX8QFwXzpegMve9EQ",
+                CALENDAR_ID,
                 null,
                 null
         );
@@ -149,7 +148,7 @@ public class CalendarEventsTest {
                 LOCATION_ID,
                 START_TIME,
                 END_TIME,
-                "BqTwX8QFwXzpegMve9EQ",
+                CALENDAR_ID,
                 null,
                 null
         );
@@ -174,7 +173,7 @@ public class CalendarEventsTest {
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -198,7 +197,7 @@ public class CalendarEventsTest {
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -309,7 +308,7 @@ public class CalendarEventsTest {
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -341,7 +340,7 @@ public class CalendarEventsTest {
                 LOCATION_ID,
                 START_TIME,
                 END_TIME,
-                "BqTwX8QFwXzpegMve9EQ",
+                CALENDAR_ID,
                 null,
                 null
         );
@@ -362,11 +361,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         AUTH_TOKEN,
-                        null,  // null apiVersion
+                        null,
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -379,11 +378,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         AUTH_TOKEN,
-                        "",  // empty apiVersion
+                        "",
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -393,15 +392,15 @@ public class CalendarEventsTest {
     @Test
     @DisplayName("Should throw exception when required parameters are null")
     public void testNullRequiredParams() {
-        // Test each required parameter being null
+
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        null,  // null token
+                        null,
                         API_VERSION,
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -410,11 +409,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         AUTH_TOKEN,
-                        null,  // null version
+                        null,
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -426,12 +425,12 @@ public class CalendarEventsTest {
     public void testEmptyRequiredParams() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        "",  // empty token
+                        "",
                         API_VERSION,
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
@@ -440,11 +439,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         AUTH_TOKEN,
-                        "",  // empty version
+                        "",
                         LOCATION_ID,
                         START_TIME,
                         END_TIME,
-                        "BqTwX8QFwXzpegMve9EQ",
+                        CALENDAR_ID,
                         null,
                         null
                 )
