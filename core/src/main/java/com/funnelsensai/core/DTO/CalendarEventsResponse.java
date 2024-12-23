@@ -1,7 +1,6 @@
 package com.funnelsensai.core.DTO;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public class CalendarEventsResponse {
