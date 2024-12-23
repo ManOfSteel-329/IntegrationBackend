@@ -152,7 +152,6 @@ public class CalendarEventsTest {
                 null,
                 null
         );
-
         assertTrue(events.isEmpty());
     }
 
