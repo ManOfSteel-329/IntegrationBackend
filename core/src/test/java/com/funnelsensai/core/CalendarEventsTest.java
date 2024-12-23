@@ -132,6 +132,80 @@ public class CalendarEventsTest {
     }
 
     @Test
+    @DisplayName("Should handle null response body")
+    public void testNullResponseBody() {
+        ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
+
+        when(restTemplate.exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        )).thenReturn(responseEntity);
+
+        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
+                AUTH_TOKEN,
+                API_VERSION,
+                LOCATION_ID,
+                START_TIME,
+                END_TIME,
+                "BqTwX8QFwXzpegMve9EQ",
+                null,
+                null
+        );
+
+        assertTrue(events.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Should handle server error response")
+    public void testServerError() {
+        when(restTemplate.exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        )).thenThrow(new org.springframework.web.client.HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        assertThrows(org.springframework.web.client.HttpServerErrorException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should handle forbidden response")
+    public void testForbiddenResponse() {
+        when(restTemplate.exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        )).thenThrow(new org.springframework.web.client.HttpClientErrorException(HttpStatus.FORBIDDEN));
+
+        assertThrows(org.springframework.web.client.HttpClientErrorException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
     @DisplayName("Should throw exception when auth token is missing")
     public void testMissingAuthToken() {
         assertThrows(IllegalArgumentException.class, () ->
