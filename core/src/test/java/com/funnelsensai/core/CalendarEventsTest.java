@@ -1,35 +1,43 @@
 package com.funnelsensai.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.funnelsensai.core.DTO.CalendarEvent;
+import com.funnelsensai.core.DTO.CalendarEventsResponse;
+import com.funnelsensai.core.service.CalendarEventService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import static net.minidev.json.JSONValue.isValidJson;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CalendarEventsTest {
-    @Mock
-    private HttpClient httpClient;
 
     @Mock
-    private HttpResponse<String> httpResponse;
+    private RestTemplate restTemplate;
 
-    private AutoCloseable closeable;
+    @Mock
+    private RestTemplateBuilder restTemplateBuilder;
+
+    private CalendarEventService calendarEventService;
     private ObjectMapper objectMapper;
-    public String mockResponseBody;
+    private AutoCloseable closeable;
 
     private static final String BASE_URL = "https://services.leadconnectorhq.com/calendars/events";
     private static final String AUTH_TOKEN = "9c48df2694a849b6089f9d0d3513efe";
@@ -37,11 +45,21 @@ public class CalendarEventsTest {
     private static final String LOCATION_ID = "0007BWpSzSwfiuSl0tR2";
     private static final String START_TIME = "1680373800000";
     private static final String END_TIME = "1680978599999";
+    private static final String CALENDAR_ID = "BqTwX8QFwXzpegMve9EQ";
+    private static final String GROUP_ID = "ocQHyuzHvysMo5N5VsXc";
+    private static final String USER_ID = "CVokAlI8fgw4WYWoCtQz";
+
+    private String mockResponseBody;
 
     @BeforeEach
     public void setup() {
         closeable = MockitoAnnotations.openMocks(this);
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        when(restTemplateBuilder.build()).thenReturn(restTemplate);
+        calendarEventService = new CalendarEventService(restTemplateBuilder, objectMapper);
+
         mockResponseBody = """
                 {
                     "events": [{
@@ -68,7 +86,7 @@ public class CalendarEventsTest {
                         "assignedResources": ["string"],
                         "masterEventId": "ocWd2wuBGAQzh2cH1fSZ"
                     }]
-                }                }
+                }
                 """;
     }
 
@@ -77,126 +95,285 @@ public class CalendarEventsTest {
         closeable.close();
     }
 
-    private HttpRequest buildRequest(Map<String, String> queryParams) {
-
-        StringBuilder urlBuilder =  new StringBuilder(BASE_URL + "?");
-        queryParams.forEach((key, value) -> urlBuilder.append(key).append("=").append(value).append("&"));
-
-        return HttpRequest.newBuilder()
-                .uri(URI.create(urlBuilder.substring(0, urlBuilder.length() - 1)))
-                .header("Authorization", "Bearer " + AUTH_TOKEN)
-                .header("Version", API_VERSION)
-                .header("Accept", "application/json")
-                .GET()
-                .build();
-    }
-
-
-@Test
-@DisplayName("Should mock a successful endpoint call")
+    @Test
+    @DisplayName("Should mock a successful endpoint call")
     public void testSuccessfulGetCalendarEvents() throws Exception {
 
-        Map<String, String> queryParams = Map.of(
-                "locationId", LOCATION_ID,
-                "startTime", START_TIME,
-                "endTime", END_TIME
+        CalendarEventsResponse mockResponse = objectMapper.readValue(mockResponseBody, CalendarEventsResponse.class);
+        ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
+
+        when(restTemplate.exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        )).thenReturn(responseEntity);
+
+        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
+                AUTH_TOKEN,
+                API_VERSION,
+                LOCATION_ID,
+                START_TIME,
+                END_TIME,
+                "BqTwX8QFwXzpegMve9EQ",
+                null,
+                null
         );
 
-        HttpRequest expectedRequest = buildRequest(queryParams);
-
-        when(httpResponse.statusCode()).thenReturn(200);
-        when(httpResponse.body()).thenReturn(mockResponseBody);
-        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
-
-        HttpResponse<String> response = httpClient.send(expectedRequest, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, response.statusCode());
-        assertTrue(isValidJson(response.body()));
-        verify(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        assertNotNull(events);
+        assertEquals(1, events.size());
+        assertEquals("ocQHyuzHvysMo5N5VsXc", events.get(0).getId());
+        verify(restTemplate).exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        );
     }
 
-@Test
-@DisplayName("Should mock a failed endpoint call due to a missing required parameter")
-    public void testMissingRequiredParams() throws Exception {
-
-        Map<String, String> queryParams = Map.of(
-                "locationId", LOCATION_ID,
-                "startTime", START_TIME
+    @Test
+    @DisplayName("Should throw exception when auth token is missing")
+    public void testMissingAuthToken() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        null,
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        CALENDAR_ID,
+                        null,
+                        null
+                )
         );
+    }
 
-        HttpRequest invalidRequest = buildRequest(queryParams);
+    @Test
+    @DisplayName("Should throw exception when API version is missing")
+    public void testMissingApiVersion() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        null,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        CALENDAR_ID,
+                        null,
+                        null
+                )
+        );
+    }
 
-        when(httpResponse.statusCode()).thenReturn(400);
-        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
+    @Test
+    @DisplayName("Should throw exception when location ID is missing")
+    public void testMissingLocationId() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        API_VERSION,
+                        null,
+                        START_TIME,
+                        END_TIME,
+                        CALENDAR_ID,
+                        null,
+                        null
+                )
+        );
+    }
 
-        HttpResponse<String> response = httpClient.send(invalidRequest, HttpResponse.BodyHandlers.ofString());
+    @Test
+    @DisplayName("Should throw exception when start time is missing")
+    public void testMissingStartTime() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        API_VERSION,
+                        LOCATION_ID,
+                        null,
+                        END_TIME,
+                        CALENDAR_ID,
+                        null,
+                        null
+                )
+        );
+    }
 
-        assertEquals(400, response.statusCode());
-        verify(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+    @Test
+    @DisplayName("Should throw exception when end time is missing")
+    public void testMissingEndTime() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        null,
+                        CALENDAR_ID,
+                        null,
+                        null
+                )
+        );
     }
 
 
     @Test
     @DisplayName("Should mock a failed endpoint call due to an invalid Authorization token")
     public void testInvalidAuthToken() throws Exception {
-        Map<String, String> queryParams = Map.of(
-                "locationId", LOCATION_ID,
-                "startTime", START_TIME,
-                "endTime", END_TIME
+
+        when(restTemplate.exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        )).thenThrow(new org.springframework.web.client.HttpClientErrorException(HttpStatus.UNAUTHORIZED));
+
+        assertThrows(org.springframework.web.client.HttpClientErrorException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        "invalid-token",
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
         );
-        HttpRequest requestWithInvalidToken = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "?locationId=" + LOCATION_ID +
-                        "&startTime=" + START_TIME +
-                        "&endTime=" + END_TIME))
-                .header("Authorization", "Bearer invalid-token")
-                .header("Version", API_VERSION)
-                .GET()
-                .build();
-
-        when(httpResponse.statusCode()).thenReturn(401);
-        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class)))
-                .thenReturn(httpResponse);
-
-        HttpResponse<String> response = httpClient.send(requestWithInvalidToken, HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-
-        assertEquals(401, response.statusCode());
-        verify(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
     }
-
 
     @Test
     @DisplayName("Should return a 200 after returning an empty events array")
     public void testEmptyEventsArray() throws Exception {
-         String emptyEventsResponseBody = """
+        String emptyEventsResponse = """
                 {
                     "events": []
                 }
                 """;
 
-        Map<String, String> queryParams = Map.of(
-                "locationId", LOCATION_ID,
-                "startTime", START_TIME,
-                "endTime", END_TIME
+        CalendarEventsResponse mockResponse = objectMapper.readValue(emptyEventsResponse, CalendarEventsResponse.class);
+        ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
+
+        when(restTemplate.exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        )).thenReturn(responseEntity);
+
+        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
+                AUTH_TOKEN,
+                API_VERSION,
+                LOCATION_ID,
+                START_TIME,
+                END_TIME,
+                "BqTwX8QFwXzpegMve9EQ",
+                null,
+                null
         );
 
-        HttpRequest request = buildRequest(queryParams);
-
-        when(httpResponse.statusCode()).thenReturn(200);
-        when(httpResponse.body()).thenReturn(emptyEventsResponseBody);
-        when(httpClient.send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class))).thenReturn(httpResponse);
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        assertEquals(200, response.statusCode());
-        assertTrue(isValidJson(response.body()));
-
-        Map<String, Object> parsedResponseBody = objectMapper.readValue(response.body(), Map.class);
-
-        assertTrue(parsedResponseBody.containsKey("events"));
-        assertTrue(((List<?>) parsedResponseBody.get("events")).isEmpty());
-
-        verify(httpClient).send(any(HttpRequest.class), any(HttpResponse.BodyHandler.class));
+        assertNotNull(events);
+        assertTrue(events.isEmpty());
+        verify(restTemplate).exchange(
+                any(String.class),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(CalendarEventsResponse.class)
+        );
     }
 
+    @Test
+    @DisplayName("Should throw exception when API version is null")
+    public void testNullApiVersion() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        null,  // null apiVersion
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when API version is empty")
+    public void testEmptyApiVersion() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        "",  // empty apiVersion
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when required parameters are null")
+    public void testNullRequiredParams() {
+        // Test each required parameter being null
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        null,  // null token
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        null,  // null version
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when required parameters are empty")
+    public void testEmptyRequiredParams() {
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        "",  // empty token
+                        API_VERSION,
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+
+        assertThrows(IllegalArgumentException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        AUTH_TOKEN,
+                        "",  // empty version
+                        LOCATION_ID,
+                        START_TIME,
+                        END_TIME,
+                        "BqTwX8QFwXzpegMve9EQ",
+                        null,
+                        null
+                )
+        );
+    }
 }

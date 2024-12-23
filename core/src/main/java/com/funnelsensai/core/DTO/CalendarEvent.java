@@ -33,21 +33,20 @@ public class CalendarEvent {
     @JsonProperty("notes")
     private String notes;
     @JsonProperty("isRecurring")
-    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
-    private boolean isRecurring;
+    private String isRecurring;
     @JsonProperty("rrule")
     private String rrule;
     @JsonProperty("startTime")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
     private LocalDateTime startTime;
     @JsonProperty("endTime")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
     private LocalDateTime endTime;
     @JsonProperty("dateAdded")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
     private LocalDateTime dateAdded;
     @JsonProperty("dateUpdated")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
     private LocalDateTime dateUpdated;
     @JsonProperty("assignedResources")
     private List<String> assignedResources;
@@ -59,7 +58,7 @@ public class CalendarEvent {
     }
 
     public CalendarEvent(String id, String address, String title, String calendarId, String locationId, String contactId,
-                         String groupId, String appointmentStatus, String assignedUserId, List<String> users, String notes, boolean isRecurring,
+                         String groupId, String appointmentStatus, String assignedUserId, List<String> users, String notes, String isRecurring,
                          String rrule, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime dateAdded, LocalDateTime dateUpdated,
                          List<String> assignedResources, String masterEventId) {
         this.id = id;
@@ -171,11 +170,11 @@ public class CalendarEvent {
         this.notes = notes;
     }
 
-    public boolean isRecurring() {
+    public String isRecurring() {
         return isRecurring;
     }
 
-    public void setRecurring(boolean recurring) {
+    public void setRecurring(String recurring) {
         isRecurring = recurring;
     }
 
