@@ -1,7 +1,8 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.opportunities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Opportunity {
@@ -58,19 +59,19 @@ public class Opportunity {
     private Contact contact;
 
     @JsonProperty("notes")
-    private List<String> notes;
+    private List<String> notes = new ArrayList<>();
 
     @JsonProperty("tasks")
-    private List<String> tasks;
+    private List<String> tasks = new ArrayList<>();
 
     @JsonProperty("calendarEvents")
-    private List<String> calendarEvents;
+    private List<String> calendarEvents = new ArrayList<>();
 
     @JsonProperty("customFields")
-    private List<CustomField> customFields;
+    private List<CustomField> customFields = new ArrayList<>();
 
     @JsonProperty("followers")
-    private List<List<String>> followers;
+    private List<List<String>> followers = new ArrayList<>();
 
 
 

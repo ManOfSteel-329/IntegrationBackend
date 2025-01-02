@@ -1,9 +1,9 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.opportunities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.funnelsensai.core.service.FieldValueDeserializer;
+import com.funnelsensai.core.dto.opportunities.util.FieldValueDeserializer;
 
 public class CustomField {
 

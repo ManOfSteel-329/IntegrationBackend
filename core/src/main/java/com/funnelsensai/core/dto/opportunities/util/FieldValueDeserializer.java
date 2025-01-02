@@ -1,4 +1,4 @@
-package com.funnelsensai.core.service;
+package com.funnelsensai.core.dto.opportunities.util;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

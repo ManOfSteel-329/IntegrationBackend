@@ -1,7 +1,8 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.opportunities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Contact {
@@ -22,7 +23,7 @@ public class Contact {
     private String phone;
 
     @JsonProperty("tags")
-    private List<String> tags;
+    private List<String> tags = new ArrayList<>();
 
 
 

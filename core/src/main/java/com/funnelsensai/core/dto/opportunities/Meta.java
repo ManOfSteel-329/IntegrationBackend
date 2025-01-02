@@ -1,4 +1,4 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.opportunities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

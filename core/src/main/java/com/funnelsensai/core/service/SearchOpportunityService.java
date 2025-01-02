@@ -1,25 +1,104 @@
 package com.funnelsensai.core.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelsensai.core.config.AppConfiguration;
 import com.funnelsensai.core.dto.SearchOpportunityRequest;
-import com.funnelsensai.core.dto.SearchOpportunityResponse;
+import com.funnelsensai.core.dto.opportunities.GetOpportunityResponse;
+import com.funnelsensai.core.dto.opportunities.GetSearchOpportunityResponse;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.net.URI;
 
 @Service
 public class SearchOpportunityService {
 
+
+    public GetOpportunityResponse getOpportunityFromApi () throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://stoplight.io/mocks/highlevel/integrations/39582852/opportunities/yWQobCRIhRguQtD2llvk")
+                .get()
+                .addHeader("Authorization", "Bearer 123")
+                .addHeader("Version", "2021-07-28")
+                .addHeader("Accept", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+
+                return convertResponseToGetOpportunityResponse(responseBody);
+        } else {
+                System.out.println("Request failed with status: " + response.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public GetSearchOpportunityResponse getSearchOpportunityFromApi() throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://stoplight.io/mocks/highlevel/integrations/39582852/opportunities/search?location_id=i2SpAtBVHSVea1sL6oah")
+                .get()
+                .addHeader("Authorization", "Bearer 123")
+                .addHeader("Version", "2021-07-28")
+                .addHeader("Accept", "application/json")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                String responseBody = response.body().string();
+
+                return convertResponseToGetSearchOpportunityResponse(responseBody);
+            } else {
+                System.out.println("Request failed with status: " + response.code());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static GetOpportunityResponse convertResponseToGetOpportunityResponse(String jsonResponse) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(jsonResponse, GetOpportunityResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static GetSearchOpportunityResponse convertResponseToGetSearchOpportunityResponse(String jsonResponse) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.readValue(jsonResponse, GetSearchOpportunityResponse.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
     private AppConfiguration appConfig;
 
-    public SearchOpportunityService (AppConfiguration appConfig) {
+    public SearchOpportunityService (AppConfiguration appConfig) throws IOException {
         this.appConfig = appConfig;
     }
 
-    public SearchOpportunityResponse getSearchOpportunityFromGoHighLevelAPI(SearchOpportunityRequest searchOppRequest) {
+    public GetSearchOpportunityResponse getSearchOpportunityFromGoHighLevelAPI(SearchOpportunityRequest searchOppRequest) {
 
         RestTemplate restTemplate1 = new RestTemplate();
 
@@ -47,7 +126,7 @@ public class SearchOpportunityService {
                 .build()
                 .toUri();
 
-        ResponseEntity<SearchOpportunityResponse> searchOpportunityResponse = restTemplate1.getForEntity(searchOpportunityUri, SearchOpportunityResponse.class);
+        ResponseEntity<GetSearchOpportunityResponse> searchOpportunityResponse = restTemplate1.getForEntity(searchOpportunityUri, GetSearchOpportunityResponse.class);
         return searchOpportunityResponse.getBody();
     }
 
