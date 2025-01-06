@@ -11,11 +11,11 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.HttpHeaders;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
+import org.springframework.web.util.UriComponentsBuilder;
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -23,7 +23,7 @@ public class CalendarEventService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final String BASE_URL = "https://services.leadconnectorhq.com/calendars/events";;
+    private final String BASE_URL = "https://stoplight.io/mocks/highlevel/integrations/39582850/calendars/events";
 
     public CalendarEventService(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
         ObjectMapper configuredMapper = objectMapper.copy();
@@ -38,79 +38,45 @@ public class CalendarEventService {
         this.objectMapper = configuredMapper;
     }
 
-    private String buildUrl(String locationId,
-                            String startTime,
-                            String endTime,
-                            String calendarId,
-                            String groupId,
-                            String userId) {
+    public List<CalendarEvent> fetchCalendarEvents(String bearerToken, String apiVersion, String locationId, String startTime,
+                                                   String endTime, String calendarId, String groupId, String userId) {
 
-        if (locationId == null || startTime == null || endTime == null) {
-            throw new IllegalArgumentException("locationId, startTime, and endTime are required");
+        if (bearerToken == null || apiVersion == null || locationId == null || startTime == null || endTime == null ||
+                bearerToken.isEmpty() || apiVersion.isEmpty() || locationId.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
+            throw new IllegalArgumentException("Token, Version, Location Id, Start Time and End Time are required");
         }
+
         if (calendarId == null && groupId == null && userId == null) {
-            throw new IllegalArgumentException("At least one of calendarId, groupId, or userId is required");
+            throw new IllegalArgumentException("At least one of calendarId, groupId or userId is required");
         }
 
-
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append(BASE_URL)
-                  .append("?locationId=")
-                  .append(locationId)
-                  .append("&startTime=")
-                  .append(startTime)
-                  .append("&endTime=")
-                  .append(endTime);
-
-        if (calendarId != null) {
-            urlBuilder.append("&calendarId=").append(calendarId);
-        }
-        if (groupId != null) {
-            urlBuilder.append("&groupId=").append(groupId);
-        }
-        if (userId != null) {
-            urlBuilder.append("&userId=").append(userId);
-        }
-        return urlBuilder.toString();
-    }
-
-    public List<CalendarEvent> fetchCalendarEvents(
-            String bearerToken,
-            String apiVersion,
-            String locationId,
-            String startTime,
-            String endTime,
-            String calendarId,
-            String groupId,
-            String userId) {
-
-        if (apiVersion == null || bearerToken == null || locationId == null || startTime == null || endTime == null) {
-            throw new IllegalArgumentException("Token, Version, Location Id, Start Time and End Time are required");
+        assert calendarId != null;
+        if (calendarId.isEmpty() && groupId.isEmpty() && userId.isEmpty()) {
+            throw new IllegalArgumentException("At least one of calendarId, groupId or userId is required");
         }
 
-        if (apiVersion.isEmpty() || bearerToken.isEmpty() || locationId.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
-            throw new IllegalArgumentException("Token, Version, Location Id, Start Time and End Time are required");
-        }
-
-        String url = buildUrl(locationId, startTime, endTime, calendarId, groupId, userId);
+        URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+                .queryParam("locationId", locationId)
+                .queryParam("startTime", startTime)
+                .queryParam("endTime", endTime)
+                .queryParamIfPresent("calendarId", Optional.ofNullable(calendarId))
+                .queryParamIfPresent("groupId", Optional.ofNullable(groupId))
+                .queryParamIfPresent("userId", Optional.ofNullable(userId))
+                .build()
+                .toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(bearerToken);
         headers.set("Version", apiVersion);
         headers.set("Accept", "application/json");
 
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-
         ResponseEntity<CalendarEventsResponse> response = restTemplate.exchange(
-                url,
+                uri,
                 HttpMethod.GET,
-                entity,
+                new HttpEntity<>(headers),
                 CalendarEventsResponse.class);
 
-        if (response.getBody() != null) {
-            return response.getBody().getEvents();
-        }
-        return Collections.emptyList();
+        return response.getBody() != null ? response.getBody().getEvents() : Collections.emptyList();
     }
 
 }
