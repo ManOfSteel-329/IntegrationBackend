@@ -38,15 +38,17 @@ public class CalendarEventsTest {
     private ObjectMapper objectMapper;
     private AutoCloseable closeable;
 
-    private static final String BASE_URL = "https://services.leadconnectorhq.com/calendars/events";
-    private static final String AUTH_TOKEN = "9c48df2694a849b6089f9d0d3513efe";
-    private static final String API_VERSION = "2021-04-15";
-    private static final String LOCATION_ID = "0007BWpSzSwfiuSl0tR2";
-    private static final String START_TIME = "1680373800000";
-    private static final String END_TIME = "1680978599999";
-    private static final String CALENDAR_ID = "BqTwX8QFwXzpegMve9EQ";
-    private static final String GROUP_ID = "ocQHyuzHvysMo5N5VsXc";
-    private static final String USER_ID = "CVokAlI8fgw4WYWoCtQz";
+    //Mock data from API
+    private static String mockBaseUrl = "https://stoplight.io/mocks/highlevel/integrations/39582850/calendars/events";
+    private static String liveBaseUrl = "https://services.leadconnectorhq.com/calendars/events";
+    private static String authToken = "9c48df2694a849b6089f9d0d3513efe";
+    private static String apiVersion = "2021-04-15";
+    private static String locationId = "0007BWpSzSwfiuSl0tR2";
+    private static String startTime = "1680373800000";
+    private static String endTime = "1680978599999";
+    private static String calendarId = "BqTwX8QFwXzpegMve9EQ";
+    private static String groupId = "ocQHyuzHvysMo5N5VsXc";
+    private static String userId = "CVokAlI8fgw4WYWoCtQz";
 
     private String mockResponseBody;
 
@@ -94,10 +96,15 @@ public class CalendarEventsTest {
         closeable.close();
     }
 
+    //Tests with real API calls using mock server/data from API documentation
+
+
+
+    //Mock tests using Mockito below
     @Test
     @DisplayName("Should mock a successful endpoint call")
     public void testSuccessfulGetCalendarEvents() throws Exception {
-
+        
         CalendarEventsResponse mockResponse = objectMapper.readValue(mockResponseBody, CalendarEventsResponse.class);
         ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
 
@@ -109,12 +116,12 @@ public class CalendarEventsTest {
         )).thenReturn(responseEntity);
 
         List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
-                AUTH_TOKEN,
-                API_VERSION,
-                LOCATION_ID,
-                START_TIME,
-                END_TIME,
-                CALENDAR_ID,
+                authToken,
+                apiVersion,
+                locationId,
+                startTime,
+                endTime,
+                calendarId,
                 null,
                 null
         );
@@ -143,12 +150,12 @@ public class CalendarEventsTest {
         )).thenReturn(responseEntity);
 
         List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
-                AUTH_TOKEN,
-                API_VERSION,
-                LOCATION_ID,
-                START_TIME,
-                END_TIME,
-                CALENDAR_ID,
+                authToken,
+                apiVersion,
+                locationId,
+                startTime,
+                endTime,
+                calendarId,
                 null,
                 null
         );
@@ -167,12 +174,12 @@ public class CalendarEventsTest {
 
         assertThrows(org.springframework.web.client.HttpServerErrorException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        authToken,
+                        apiVersion,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -191,12 +198,12 @@ public class CalendarEventsTest {
 
         assertThrows(org.springframework.web.client.HttpClientErrorException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        authToken,
+                        apiVersion,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -209,11 +216,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         null,
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        apiVersion,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -225,12 +232,12 @@ public class CalendarEventsTest {
     public void testMissingApiVersion() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
+                        authToken,
                         null,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -242,12 +249,12 @@ public class CalendarEventsTest {
     public void testMissingLocationId() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
-                        API_VERSION,
+                        authToken,
+                        apiVersion,
                         null,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -259,12 +266,12 @@ public class CalendarEventsTest {
     public void testMissingStartTime() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
-                        API_VERSION,
-                        LOCATION_ID,
+                        authToken,
+                        apiVersion,
+                        locationId,
                         null,
-                        END_TIME,
-                        CALENDAR_ID,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -276,12 +283,12 @@ public class CalendarEventsTest {
     public void testMissingEndTime() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
+                        authToken,
+                        apiVersion,
+                        locationId,
+                        startTime,
                         null,
-                        CALENDAR_ID,
+                        calendarId,
                         null,
                         null
                 )
@@ -303,11 +310,11 @@ public class CalendarEventsTest {
         assertThrows(org.springframework.web.client.HttpClientErrorException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         "invalid-token",
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        apiVersion,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -334,12 +341,12 @@ public class CalendarEventsTest {
         )).thenReturn(responseEntity);
 
         List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
-                AUTH_TOKEN,
-                API_VERSION,
-                LOCATION_ID,
-                START_TIME,
-                END_TIME,
-                CALENDAR_ID,
+                authToken,
+                apiVersion,
+                locationId,
+                startTime,
+                endTime,
+                calendarId,
                 null,
                 null
         );
@@ -359,12 +366,12 @@ public class CalendarEventsTest {
     public void testNullApiVersion() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
+                        authToken,
                         null,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -376,12 +383,12 @@ public class CalendarEventsTest {
     public void testEmptyApiVersion() {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
+                        authToken,
                         "",
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -395,11 +402,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         null,
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        apiVersion,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -407,12 +414,12 @@ public class CalendarEventsTest {
 
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
+                        authToken,
                         null,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -425,11 +432,11 @@ public class CalendarEventsTest {
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         "",
-                        API_VERSION,
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        apiVersion,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )
@@ -437,12 +444,12 @@ public class CalendarEventsTest {
 
         assertThrows(IllegalArgumentException.class, () ->
                 calendarEventService.fetchCalendarEvents(
-                        AUTH_TOKEN,
+                        authToken,
                         "",
-                        LOCATION_ID,
-                        START_TIME,
-                        END_TIME,
-                        CALENDAR_ID,
+                        locationId,
+                        startTime,
+                        endTime,
+                        calendarId,
                         null,
                         null
                 )

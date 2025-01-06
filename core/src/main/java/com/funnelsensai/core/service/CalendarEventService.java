@@ -46,15 +46,6 @@ public class CalendarEventService {
             throw new IllegalArgumentException("Token, Version, Location Id, Start Time and End Time are required");
         }
 
-        if (calendarId == null && groupId == null && userId == null) {
-            throw new IllegalArgumentException("At least one of calendarId, groupId or userId is required");
-        }
-
-        assert calendarId != null;
-        if (calendarId.isEmpty() && groupId.isEmpty() && userId.isEmpty()) {
-            throw new IllegalArgumentException("At least one of calendarId, groupId or userId is required");
-        }
-
         URI uri = UriComponentsBuilder.fromHttpUrl(BASE_URL)
                 .queryParam("locationId", locationId)
                 .queryParam("startTime", startTime)
