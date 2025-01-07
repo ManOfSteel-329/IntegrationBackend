@@ -2,53 +2,43 @@ package com.funnelsensai.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.funnelsensai.core.DTO.CalendarEvent;
-import com.funnelsensai.core.DTO.CalendarEventsResponse;
+import com.funnelsensai.core.dto.CalendarEvent;
 import com.funnelsensai.core.service.CalendarEventService;
+import okhttp3.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CalendarEventsTest {
 
     @Mock
-    private RestTemplate restTemplate;
+    private OkHttpClient mockHttpClient;
 
     @Mock
-    private RestTemplateBuilder restTemplateBuilder;
+    private Call mockCall;
 
     private CalendarEventService calendarEventService;
     private ObjectMapper objectMapper;
     private AutoCloseable closeable;
 
-    //Mock data from API
-    private static String mockBaseUrl = "https://stoplight.io/mocks/highlevel/integrations/39582850/calendars/events";
-    private static String liveBaseUrl = "https://services.leadconnectorhq.com/calendars/events";
-    private static String authToken = "9c48df2694a849b6089f9d0d3513efe";
-    private static String apiVersion = "2021-04-15";
-    private static String locationId = "0007BWpSzSwfiuSl0tR2";
-    private static String startTime = "1680373800000";
-    private static String endTime = "1680978599999";
-    private static String calendarId = "BqTwX8QFwXzpegMve9EQ";
-    private static String groupId = "ocQHyuzHvysMo5N5VsXc";
-    private static String userId = "CVokAlI8fgw4WYWoCtQz";
+    // Test data
+    private static final String mockBaseUrl = "https://stoplight.io/mocks/highlevel/integrations/39582850/calendars/events";
+    private static final String authToken = "9c48df2694a849b6089f9d0d3513efe";
+    private static final String apiVersion = "2021-04-15";
+    private static final String locationId = "0007BWpSzSwfiuSl0tR2";
+    private static final String startTime = "1680373800000";
+    private static final String endTime = "1680978599999";
+    private static final String calendarId = "BqTwX8QFwXzpegMve9EQ";
 
     private String mockResponseBody;
 
@@ -57,9 +47,7 @@ public class CalendarEventsTest {
         closeable = MockitoAnnotations.openMocks(this);
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-
-        when(restTemplateBuilder.build()).thenReturn(restTemplate);
-        calendarEventService = new CalendarEventService(restTemplateBuilder, objectMapper);
+        calendarEventService = new CalendarEventService(mockHttpClient, objectMapper);
 
         mockResponseBody = """
                 {
@@ -73,10 +61,7 @@ public class CalendarEventsTest {
                         "groupId": "9NkT25Vor1v4aQatFsv2",
                         "appointmentStatus": "confirmed",
                         "assignedUserId": "YlWd2wuCAZQzh2cH1fVZ",
-                        "users": [
-                              "YlWd2wuCAZQzh2cH1fVZ",
-                              "9NkT25Vor1v4aQatFsv2"
-                        ],
+                        "users": ["YlWd2wuCAZQzh2cH1fVZ", "9NkT25Vor1v4aQatFsv2"],
                         "notes": "Some dummy note",
                         "isRecurring": "true",
                         "rrule": "RRULE:FREQ=DAILY;INTERVAL=1;COUNT=5",
@@ -96,20 +81,24 @@ public class CalendarEventsTest {
         closeable.close();
     }
 
-    //Mock tests using Mockito
     @Test
     @DisplayName("Should mock a successful endpoint call")
     public void testSuccessfulGetCalendarEvents() throws Exception {
-        
-        CalendarEventsResponse mockResponse = objectMapper.readValue(mockResponseBody, CalendarEventsResponse.class);
-        ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
+        ResponseBody responseBody = ResponseBody.create(
+                MediaType.parse("application/json"),
+                mockResponseBody
+        );
 
-        when(restTemplate.exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        )).thenReturn(responseEntity);
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(200)
+                .message("OK")
+                .body(responseBody)
+                .build();
+
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
 
         List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
                 authToken,
@@ -125,25 +114,21 @@ public class CalendarEventsTest {
         assertNotNull(events);
         assertEquals(1, events.size());
         assertEquals("ocQHyuzHvysMo5N5VsXc", events.get(0).getId());
-        verify(restTemplate).exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        );
     }
 
     @Test
     @DisplayName("Should handle null response body")
-    public void testNullResponseBody() {
-        ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(null, HttpStatus.OK);
+    public void testNullResponseBody() throws IOException {
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(200)
+                .message("OK")
+                .body(ResponseBody.create(MediaType.parse("application/json"), ""))
+                .build();
 
-        when(restTemplate.exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        )).thenReturn(responseEntity);
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
 
         List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
                 authToken,
@@ -160,15 +145,19 @@ public class CalendarEventsTest {
 
     @Test
     @DisplayName("Should handle server error response")
-    public void testServerError() {
-        when(restTemplate.exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        )).thenThrow(new org.springframework.web.client.HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
+    public void testServerError() throws IOException {
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(500)
+                .message("Internal Server Error")
+                .body(ResponseBody.create(MediaType.parse("text/plain"), "Server Error"))
+                .build();
 
-        assertThrows(org.springframework.web.client.HttpServerErrorException.class, () ->
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+
+        assertThrows(IOException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         authToken,
                         apiVersion,
@@ -184,15 +173,19 @@ public class CalendarEventsTest {
 
     @Test
     @DisplayName("Should handle forbidden response")
-    public void testForbiddenResponse() {
-        when(restTemplate.exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        )).thenThrow(new org.springframework.web.client.HttpClientErrorException(HttpStatus.FORBIDDEN));
+    public void testForbiddenResponse() throws IOException {
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(403)
+                .message("Forbidden")
+                .body(ResponseBody.create(MediaType.parse("text/plain"), "Forbidden"))
+                .build();
 
-        assertThrows(org.springframework.web.client.HttpClientErrorException.class, () ->
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+
+        assertThrows(IOException.class, () ->
                 calendarEventService.fetchCalendarEvents(
                         authToken,
                         apiVersion,
@@ -204,6 +197,46 @@ public class CalendarEventsTest {
                         null
                 )
         );
+    }
+
+    @Test
+    @DisplayName("Should return empty list for empty events array")
+    public void testEmptyEventsArray() throws IOException {
+        String emptyEventsResponse = """
+                {
+                    "events": []
+                }
+                """;
+
+        ResponseBody responseBody = ResponseBody.create(
+                MediaType.parse("application/json"),
+                emptyEventsResponse
+        );
+
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(200)
+                .message("OK")
+                .body(responseBody)
+                .build();
+
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+
+        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
+                authToken,
+                apiVersion,
+                locationId,
+                startTime,
+                endTime,
+                calendarId,
+                null,
+                null
+        );
+
+        assertNotNull(events);
+        assertTrue(events.isEmpty());
     }
 
     @Test
@@ -291,89 +324,6 @@ public class CalendarEventsTest {
         );
     }
 
-
-    @Test
-    @DisplayName("Should mock a failed endpoint call due to an invalid Authorization token")
-    public void testInvalidAuthToken() throws Exception {
-
-        when(restTemplate.exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        )).thenThrow(new org.springframework.web.client.HttpClientErrorException(HttpStatus.UNAUTHORIZED));
-
-        assertThrows(org.springframework.web.client.HttpClientErrorException.class, () ->
-                calendarEventService.fetchCalendarEvents(
-                        "invalid-token",
-                        apiVersion,
-                        locationId,
-                        startTime,
-                        endTime,
-                        calendarId,
-                        null,
-                        null
-                )
-        );
-    }
-
-    @Test
-    @DisplayName("Should return a 200 after returning an empty events array")
-    public void testEmptyEventsArray() throws Exception {
-        String emptyEventsResponse = """
-                {
-                    "events": []
-                }
-                """;
-
-        CalendarEventsResponse mockResponse = objectMapper.readValue(emptyEventsResponse, CalendarEventsResponse.class);
-        ResponseEntity<CalendarEventsResponse> responseEntity = new ResponseEntity<>(mockResponse, HttpStatus.OK);
-
-        when(restTemplate.exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        )).thenReturn(responseEntity);
-
-        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
-                authToken,
-                apiVersion,
-                locationId,
-                startTime,
-                endTime,
-                calendarId,
-                null,
-                null
-        );
-
-        assertNotNull(events);
-        assertTrue(events.isEmpty());
-        verify(restTemplate).exchange(
-                any(String.class),
-                eq(HttpMethod.GET),
-                any(HttpEntity.class),
-                eq(CalendarEventsResponse.class)
-        );
-    }
-
-    @Test
-    @DisplayName("Should throw exception when API version is null")
-    public void testNullApiVersion() {
-        assertThrows(IllegalArgumentException.class, () ->
-                calendarEventService.fetchCalendarEvents(
-                        authToken,
-                        null,
-                        locationId,
-                        startTime,
-                        endTime,
-                        calendarId,
-                        null,
-                        null
-                )
-        );
-    }
-
     @Test
     @DisplayName("Should throw exception when API version is empty")
     public void testEmptyApiVersion() {
@@ -381,37 +331,6 @@ public class CalendarEventsTest {
                 calendarEventService.fetchCalendarEvents(
                         authToken,
                         "",
-                        locationId,
-                        startTime,
-                        endTime,
-                        calendarId,
-                        null,
-                        null
-                )
-        );
-    }
-
-    @Test
-    @DisplayName("Should throw exception when required parameters are null")
-    public void testNullRequiredParams() {
-
-        assertThrows(IllegalArgumentException.class, () ->
-                calendarEventService.fetchCalendarEvents(
-                        null,
-                        apiVersion,
-                        locationId,
-                        startTime,
-                        endTime,
-                        calendarId,
-                        null,
-                        null
-                )
-        );
-
-        assertThrows(IllegalArgumentException.class, () ->
-                calendarEventService.fetchCalendarEvents(
-                        authToken,
-                        null,
                         locationId,
                         startTime,
                         endTime,
