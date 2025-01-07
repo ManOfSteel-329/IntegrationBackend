@@ -1,8 +1,10 @@
 package com.funnelsensai.core;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.funnelsensai.core.dto.CalendarEvent;
+import com.funnelsensai.core.dto.CalendarEventsResponse;
 import com.funnelsensai.core.service.CalendarEventService;
 import okhttp3.*;
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -79,6 +83,69 @@ public class CalendarEventsTest {
     @AfterEach
     public void close() throws Exception {
         closeable.close();
+    }
+
+    @Test
+    @DisplayName("Should correctly map JSON response to CalendarEventDTO")
+    public void testCalendarEventDTOMapping() throws IOException {
+        ResponseBody responseBody = ResponseBody.create(
+                MediaType.parse("application/json"),
+                mockResponseBody
+        );
+
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(200)
+                .message("Ok")
+                .body(responseBody)
+                .build();
+
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+
+        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
+                authToken,
+                apiVersion,
+                locationId,
+                startTime,
+                endTime,
+                calendarId,
+                null,
+                null
+        );
+
+        assertNotNull(events);
+        assertEquals(1, events.size());
+
+        CalendarEvent event = events.get(0);
+
+        assertEquals("ocQHyuzHvysMo5N5VsXc", event.getId());
+        assertEquals("https://meet.google.com/yqp-gogr-wve", event.getAddress());
+        assertEquals("Appointment with GHL Dev team", event.getTitle());
+        assertEquals("BqTwX8QFwXzpegMve9EQ", event.getCalendarId());
+        assertEquals("0007BWpSzSwfiuSl0tR2", event.getLocationId());
+        assertEquals("9NkT25Vor1v4aQatFsv2", event.getContactId());
+        assertEquals("9NkT25Vor1v4aQatFsv2", event.getGroupId());
+        assertEquals("confirmed", event.getAppointmentStatus());
+        assertEquals("YlWd2wuCAZQzh2cH1fVZ", event.getAssignedUserId());
+        assertEquals(List.of("YlWd2wuCAZQzh2cH1fVZ", "9NkT25Vor1v4aQatFsv2"), event.getUsers());
+        assertEquals("Some dummy note", event.getNotes());
+        assertEquals("true", event.isRecurring());
+        assertEquals("RRULE:FREQ=DAILY;INTERVAL=1;COUNT=5", event.getRrule());
+        assertNotNull(event.getStartTime());
+        assertNotNull(event.getEndTime());
+        assertNotNull(event.getDateAdded());
+        assertNotNull(event.getDateUpdated());
+        assertEquals(List.of("string"), event.getAssignedResources());
+        assertEquals("ocWd2wuBGAQzh2cH1fSZ", event.getMasterEventId());
+
+        assertEquals(
+                LocalDateTime.parse("2023-09-25T16:00:00+05:30", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                event.getStartTime()
+        );
+
+
     }
 
     @Test

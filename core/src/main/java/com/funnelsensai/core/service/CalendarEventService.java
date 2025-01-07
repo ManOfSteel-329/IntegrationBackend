@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 public class CalendarEventService {
 
@@ -37,7 +36,7 @@ public class CalendarEventService {
     }
 
     public List<CalendarEvent> fetchCalendarEvents(String bearerToken, String apiVersion, String locationId, String startTime,
-                                                   String endTime, String calendarId, String groupId, String userId) {
+                                                   String endTime, String calendarId, String groupId, String userId) throws IOException {
 
         if (bearerToken == null || apiVersion == null || locationId == null || startTime == null || endTime == null ||
                 bearerToken.isEmpty() || apiVersion.isEmpty() || locationId.isEmpty() || startTime.isEmpty() || endTime.isEmpty()) {
@@ -61,22 +60,19 @@ public class CalendarEventService {
                 .header("Accept", "application/json")
                 .build();
 
-        try (Response response = httpClient.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new IOException("Unexpected code: " + response);
-            }
-
-            String responseBody = response.body() != null ? response.body().string() : null;
-            if (responseBody == null || responseBody.isEmpty()) {
-                return Collections.emptyList();
-            }
-
-            CalendarEventsResponse calendarEventsResponse = objectMapper.readValue(responseBody, CalendarEventsResponse.class);
-            return calendarEventsResponse.getEvents();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to fetch calendar events", e);
+        Response response = httpClient.newCall(request).execute();
+        if (!response.isSuccessful()) {
+            throw new IOException("Unexpected code: " + response);
         }
 
-    }
+        String responseBody = response.body() != null ? response.body().string() : null;
+        if (responseBody == null || responseBody.isEmpty()) {
+            return Collections.emptyList();
+        }
 
+        CalendarEventsResponse calendarEventsResponse = objectMapper.readValue(responseBody, CalendarEventsResponse.class);
+        return calendarEventsResponse.getEvents();
+    }
 }
+
+
