@@ -1,17 +1,19 @@
 package com.funnelsensai.core.service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.funnelsensai.core.DTO.CalendarEvent;
 import com.funnelsensai.core.DTO.CalendarEventsResponse;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
@@ -21,20 +23,17 @@ import java.util.Optional;
 @Service
 public class CalendarEventService {
 
-    private final RestTemplate restTemplate;
+    private final OkHttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final String BASE_URL = "https://stoplight.io/mocks/highlevel/integrations/39582850/calendars/events";
 
-    public CalendarEventService(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
+    public CalendarEventService(OkHttpClient httpClient, ObjectMapper objectMapper) {
+        this.httpClient = httpClient;
         ObjectMapper configuredMapper = objectMapper.copy();
         configuredMapper.registerModule(new JavaTimeModule());
         configuredMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(configuredMapper);
-
-        this.restTemplate = restTemplateBuilder.build();
-        this.restTemplate.getMessageConverters().add(0, converter);
         this.objectMapper = configuredMapper;
     }
 
@@ -56,18 +55,29 @@ public class CalendarEventService {
                 .build()
                 .toUri();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(bearerToken);
-        headers.set("Version", apiVersion);
-        headers.set("Accept", "application/json");
+        Request request = new Request.Builder()
+                .url(uri.toString())
+                .header("Authorization", "Bearer " + bearerToken)
+                .header("Version", apiVersion)
+                .header("Accept", "application/json")
+                .build();
 
-        ResponseEntity<CalendarEventsResponse> response = restTemplate.exchange(
-                uri,
-                HttpMethod.GET,
-                new HttpEntity<>(headers),
-                CalendarEventsResponse.class);
+        try (Response response = httpClient.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code: " + response);
+            }
 
-        return response.getBody() != null ? response.getBody().getEvents() : Collections.emptyList();
+            String responseBody = response.body() != null ? response.body().string() : null;
+            if (responseBody == null || responseBody.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            CalendarEventsResponse calendarEventsResponse = objectMapper.readValue(responseBody, CalendarEventsResponse.class);
+            return calendarEventsResponse.getEvents();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to fetch calendar events", e);
+        }
+
     }
 
 }

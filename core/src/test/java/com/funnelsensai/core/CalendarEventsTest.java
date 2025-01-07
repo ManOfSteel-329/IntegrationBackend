@@ -96,11 +96,7 @@ public class CalendarEventsTest {
         closeable.close();
     }
 
-    //Tests with real API calls using mock server/data from API documentation
-
-
-
-    //Mock tests using Mockito below
+    //Mock tests using Mockito
     @Test
     @DisplayName("Should mock a successful endpoint call")
     public void testSuccessfulGetCalendarEvents() throws Exception {
