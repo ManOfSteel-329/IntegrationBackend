@@ -8,7 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 
-public class FunnelSensClientService {
+public class GetUserService {
     private final String API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582858/users/userId";
     private final String API_VERSION = "2021-07-28";
     private final String TOKEN = "Bearer 123";
