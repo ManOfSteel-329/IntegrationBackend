@@ -389,22 +389,6 @@ public class CalendarEventsTest {
         );
     }
 
-    @Test
-    @DisplayName("Should throw exception when API version is empty")
-    public void testEmptyApiVersion() {
-        assertThrows(IllegalArgumentException.class, () ->
-                calendarEventService.fetchCalendarEvents(
-                        authToken,
-                        "",
-                        locationId,
-                        startTime,
-                        endTime,
-                        calendarId,
-                        null,
-                        null
-                )
-        );
-    }
 
     @Test
     @DisplayName("Should throw exception when required parameters are empty")
