@@ -3,8 +3,8 @@ package com.funnelsensai.core.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.funnelsensai.core.dto.CalendarEvent;
-import com.funnelsensai.core.dto.CalendarEventsResponse;
+import com.funnelsensai.core.dto.CalendarEvent.CalendarEvent;
+import com.funnelsensai.core.dto.CalendarEvent.CalendarEventResponse;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -70,7 +70,7 @@ public class CalendarEventService {
             return Collections.emptyList();
         }
 
-        CalendarEventsResponse calendarEventsResponse = objectMapper.readValue(responseBody, CalendarEventsResponse.class);
+        CalendarEventResponse calendarEventsResponse = objectMapper.readValue(responseBody, CalendarEventResponse.class);
         return calendarEventsResponse.getEvents();
     }
 }

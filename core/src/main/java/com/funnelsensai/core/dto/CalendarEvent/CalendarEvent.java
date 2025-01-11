@@ -1,4 +1,4 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.CalendarEvent;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

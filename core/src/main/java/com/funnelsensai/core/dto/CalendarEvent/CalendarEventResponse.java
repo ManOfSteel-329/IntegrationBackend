@@ -1,9 +1,10 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.CalendarEvent;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
-public class CalendarEventsResponse {
+public class CalendarEventResponse {
 
     @JsonProperty("events")
     private List<CalendarEvent> events;

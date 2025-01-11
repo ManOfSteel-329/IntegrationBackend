@@ -2,7 +2,7 @@ package com.funnelsensai.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.funnelsensai.core.dto.CalendarEvent;
+import com.funnelsensai.core.dto.CalendarEvent.CalendarEvent;
 import com.funnelsensai.core.service.CalendarEventService;
 import okhttp3.*;
 import org.junit.jupiter.api.AfterEach;
