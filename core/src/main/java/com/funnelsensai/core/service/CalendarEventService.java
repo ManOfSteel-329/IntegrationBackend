@@ -17,6 +17,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.TimeZone;
 
 @Service
 public class CalendarEventService {
@@ -30,6 +31,7 @@ public class CalendarEventService {
         ObjectMapper configuredMapper = objectMapper.copy();
         configuredMapper.registerModule(new JavaTimeModule());
         configuredMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        configuredMapper.setTimeZone(TimeZone.getTimeZone("UTC"));
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setObjectMapper(configuredMapper);
         this.objectMapper = configuredMapper;
@@ -65,7 +67,10 @@ public class CalendarEventService {
             throw new IOException("Unexpected code: " + response);
         }
 
+        System.out.println(response.code());
+
         String responseBody = response.body() != null ? response.body().string() : null;
+        System.out.println(responseBody);
         if (responseBody == null || responseBody.isEmpty()) {
             return Collections.emptyList();
         }

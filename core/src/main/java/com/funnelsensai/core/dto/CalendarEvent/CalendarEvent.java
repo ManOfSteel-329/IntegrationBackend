@@ -4,7 +4,7 @@ package com.funnelsensai.core.dto.CalendarEvent;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 public class CalendarEvent {
@@ -36,17 +36,17 @@ public class CalendarEvent {
     @JsonProperty("rrule")
     private String rrule;
     @JsonProperty("startTime")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-    private LocalDateTime startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime startTime;
     @JsonProperty("endTime")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-    private LocalDateTime endTime;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime endTime;
     @JsonProperty("dateAdded")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-    private LocalDateTime dateAdded;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime dateAdded;
     @JsonProperty("dateUpdated")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX", timezone = "UTC")
-    private LocalDateTime dateUpdated;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private ZonedDateTime dateUpdated;
     @JsonProperty("assignedResources")
     private List<String> assignedResources;
     @JsonProperty("masterEventId")
@@ -58,7 +58,7 @@ public class CalendarEvent {
 
     public CalendarEvent(String id, String address, String title, String calendarId, String locationId, String contactId,
                          String groupId, String appointmentStatus, String assignedUserId, List<String> users, String notes, String isRecurring,
-                         String rrule, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime dateAdded, LocalDateTime dateUpdated,
+                         String rrule, ZonedDateTime startTime, ZonedDateTime endTime, ZonedDateTime dateAdded, ZonedDateTime dateUpdated,
                          List<String> assignedResources, String masterEventId) {
         this.id = id;
         this.address = address;
@@ -185,35 +185,35 @@ public class CalendarEvent {
         this.rrule = rrule;
     }
 
-    public LocalDateTime getStartTime() {
+    public ZonedDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(ZonedDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public ZonedDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(ZonedDateTime endTime) {
         this.endTime = endTime;
     }
 
-    public LocalDateTime getDateAdded() {
+    public ZonedDateTime getDateAdded() {
         return dateAdded;
     }
 
-    public void setDateAdded(LocalDateTime dateAdded) {
+    public void setDateAdded(ZonedDateTime dateAdded) {
         this.dateAdded = dateAdded;
     }
 
-    public LocalDateTime getDateUpdated() {
+    public ZonedDateTime getDateUpdated() {
         return dateUpdated;
     }
 
-    public void setDateUpdated(LocalDateTime dateUpdated) {
+    public void setDateUpdated(ZonedDateTime dateUpdated) {
         this.dateUpdated = dateUpdated;
     }
 

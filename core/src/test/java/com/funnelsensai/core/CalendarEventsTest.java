@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -138,10 +139,11 @@ public class CalendarEventsTest {
         assertEquals(List.of("string"), event.getAssignedResources());
         assertEquals("ocWd2wuBGAQzh2cH1fSZ", event.getMasterEventId());
 
-        assertEquals(
-                LocalDateTime.parse("2023-09-25T16:00:00+05:30", DateTimeFormatter.ISO_OFFSET_DATE_TIME),
-                event.getStartTime()
-        );
+        ZonedDateTime expectedDateTime = ZonedDateTime.parse("2023-09-25T10:30:00Z");
+        assertEquals(expectedDateTime, event.getStartTime());
+        assertEquals(expectedDateTime, event.getEndTime());
+        assertEquals(expectedDateTime, event.getDateAdded());
+        assertEquals(expectedDateTime, event.getDateUpdated());
 
 
     }
