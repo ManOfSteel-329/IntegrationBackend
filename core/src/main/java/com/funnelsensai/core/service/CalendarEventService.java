@@ -67,10 +67,10 @@ public class CalendarEventService {
             throw new IOException("Unexpected code: " + response);
         }
 
-        System.out.println(response.code());
-
         String responseBody = response.body() != null ? response.body().string() : null;
+
         System.out.println(responseBody);
+
         if (responseBody == null || responseBody.isEmpty()) {
             return Collections.emptyList();
         }

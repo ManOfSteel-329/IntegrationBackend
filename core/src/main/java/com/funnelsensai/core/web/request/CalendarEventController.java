@@ -22,7 +22,7 @@ public class CalendarEventController {
         this.calendarEventService = calendarEventService;
     }
 
-    @GetMapping("/calendar-events")
+    @GetMapping("/api/calendar-events")
     public ResponseEntity<List<CalendarEvent>> getCalendarEvents(
             @AuthenticationPrincipal User user,
             @RequestHeader(value = "Authorization", required = true) String bearerToken,
