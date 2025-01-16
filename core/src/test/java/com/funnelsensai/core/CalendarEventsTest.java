@@ -13,9 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +33,6 @@ public class CalendarEventsTest {
     private AutoCloseable closeable;
 
     // Test data
-    private static final String mockBaseUrl = "https://stoplight.io/mocks/highlevel/integrations/39582850/calendars/events";
     private static final String authToken = "9c48df2694a849b6089f9d0d3513efe";
     private static final String apiVersion = "2021-04-15";
     private static final String locationId = "0007BWpSzSwfiuSl0tR2";
@@ -87,10 +84,7 @@ public class CalendarEventsTest {
     @Test
     @DisplayName("Should correctly map JSON response to CalendarEventDTO")
     public void testCalendarEventDTOMapping() throws IOException {
-        ResponseBody responseBody = ResponseBody.create(
-                MediaType.parse("application/json"),
-                mockResponseBody
-        );
+        ResponseBody responseBody = ResponseBody.create(mockResponseBody, MediaType.parse("application/json"));
 
         Response mockResponse = new Response.Builder()
                 .request(new Request.Builder().url("http://test.com").build())
@@ -151,10 +145,7 @@ public class CalendarEventsTest {
     @Test
     @DisplayName("Should mock a successful endpoint call")
     public void testSuccessfulGetCalendarEvents() throws Exception {
-        ResponseBody responseBody = ResponseBody.create(
-                MediaType.parse("application/json"),
-                mockResponseBody
-        );
+        ResponseBody responseBody = ResponseBody.create(mockResponseBody, MediaType.parse("application/json"));
 
         Response mockResponse = new Response.Builder()
                 .request(new Request.Builder().url("http://test.com").build())
@@ -191,7 +182,7 @@ public class CalendarEventsTest {
                 .protocol(Protocol.HTTP_1_1)
                 .code(200)
                 .message("OK")
-                .body(ResponseBody.create(MediaType.parse("application/json"), ""))
+                .body(ResponseBody.create("", MediaType.parse("application/json")))
                 .build();
 
         when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
@@ -218,7 +209,7 @@ public class CalendarEventsTest {
                 .protocol(Protocol.HTTP_1_1)
                 .code(500)
                 .message("Internal Server Error")
-                .body(ResponseBody.create(MediaType.parse("text/plain"), "Server Error"))
+                .body(ResponseBody.create("Server Error", MediaType.parse("text/plain")))
                 .build();
 
         when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
@@ -246,7 +237,7 @@ public class CalendarEventsTest {
                 .protocol(Protocol.HTTP_1_1)
                 .code(403)
                 .message("Forbidden")
-                .body(ResponseBody.create(MediaType.parse("text/plain"), "Forbidden"))
+                .body(ResponseBody.create("Forbidden", MediaType.parse("text/plain")))
                 .build();
 
         when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
@@ -275,10 +266,7 @@ public class CalendarEventsTest {
                 }
                 """;
 
-        ResponseBody responseBody = ResponseBody.create(
-                MediaType.parse("application/json"),
-                emptyEventsResponse
-        );
+        ResponseBody responseBody = ResponseBody.create(emptyEventsResponse, MediaType.parse("application/json"));
 
         Response mockResponse = new Response.Builder()
                 .request(new Request.Builder().url("http://test.com").build())
