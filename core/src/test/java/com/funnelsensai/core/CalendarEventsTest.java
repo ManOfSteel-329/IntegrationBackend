@@ -409,4 +409,68 @@ public class CalendarEventsTest {
                 )
         );
     }
+
+    @Test
+    @DisplayName("Should handle malformed JSON response")
+    public void testMalformedJsonResponse() throws IOException {
+        ResponseBody responseBody = ResponseBody.create("{ malformed json }", MediaType.parse("application/json"));
+        
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(200)
+                .message("OK")
+                .body(responseBody)
+                .build();
+
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+
+        assertThrows(IOException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        authToken, apiVersion, locationId, startTime, endTime, calendarId, null, null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should handle network timeout")
+    public void testNetworkTimeout() throws IOException {
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenThrow(new IOException("Network timeout"));
+
+        assertThrows(IOException.class, () ->
+                calendarEventService.fetchCalendarEvents(
+                        authToken, apiVersion, locationId, startTime, endTime, calendarId, null, null
+                )
+        );
+    }
+
+    @Test
+    @DisplayName("Should handle optional parameters correctly")
+    public void testOptionalParameters() throws IOException {
+        ResponseBody responseBody = ResponseBody.create(mockResponseBody, MediaType.parse("application/json"));
+        
+        Response mockResponse = new Response.Builder()
+                .request(new Request.Builder().url("http://test.com").build())
+                .protocol(Protocol.HTTP_1_1)
+                .code(200)
+                .message("OK")
+                .body(responseBody)
+                .build();
+
+        when(mockHttpClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+
+        
+        List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
+                authToken, apiVersion, locationId, startTime, endTime, "calendarId", "groupId", "userId"
+        );
+        assertNotNull(events);
+        
+        events = calendarEventService.fetchCalendarEvents(
+                authToken, apiVersion, locationId, startTime, endTime, null, null, null
+        );
+        assertNotNull(events);
+    }
 }

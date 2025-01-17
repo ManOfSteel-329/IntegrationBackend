@@ -35,8 +35,6 @@ public class CalendarEventController {
             @RequestParam(required = false) String userId) {
         bearerToken = bearerToken.replace("Bearer ", "");
 
-        System.out.println("Authenticated User: " + user.getUsername() + " " + user.getPassword());
-
         try {
             List<CalendarEvent> events = calendarEventService.fetchCalendarEvents(
                     bearerToken,
@@ -47,7 +45,6 @@ public class CalendarEventController {
                     calendarId,
                     groupId,
                     userId);
-            System.out.println(events);
             return ResponseEntity.ok(events);
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
