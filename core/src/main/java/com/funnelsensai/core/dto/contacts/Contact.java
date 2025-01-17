@@ -1,5 +1,6 @@
 package com.funnelsensai.core.dto.contacts;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -27,17 +28,17 @@ public class Contact {
 	private String country;
 	private String postalCode;
 	private String website;
-	private Tags tags;
-	private String dateOfBirth;
-	private String dateAdded;
-	private String dateUpdated;
+	private List<String> tags;
+	private Date dateOfBirth;
+	private Date dateAdded;
+	private Date dateUpdated;
 	private String attachments;
 	private String ssn;
 	private String keyword;
 	private String firstNameLowerCase;
 	private String fullNameLowerCase;
 	private String lastNameLowerCase;
-	private String lastActivity;
+	private Date lastActivity;
 	private List<CustomFields> customFields;
 	private String businessId;
 	private AttributionSource attributionSource;
@@ -163,28 +164,28 @@ public class Contact {
 	public void setWebsite(String website) {
 		this.website = website;
 	}
-	public Tags getTags() {
+	public List<String> getTags() {
 		return tags;
 	}
-	public void setTags(Tags tags) {
+	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
-	public String getDateOfBirth() {
+	public Date getDateOfBirth() {
 		return dateOfBirth;
 	}
-	public void setDateOfBirth(String dateOfBirth) {
+	public void setDateOfBirth(Date dateOfBirth) {
 		this.dateOfBirth = dateOfBirth;
 	}
-	public String getDateAdded() {
+	public Date getDateAdded() {
 		return dateAdded;
 	}
-	public void setDateAdded(String dateAdded) {
+	public void setDateAdded(Date dateAdded) {
 		this.dateAdded = dateAdded;
 	}
-	public String getDateUpdated() {
+	public Date getDateUpdated() {
 		return dateUpdated;
 	}
-	public void setDateUpdated(String dateUpdated) {
+	public void setDateUpdated(Date dateUpdated) {
 		this.dateUpdated = dateUpdated;
 	}
 	public String getAttachments() {
@@ -223,10 +224,10 @@ public class Contact {
 	public void setLastNameLowerCase(String lastNameLowerCase) {
 		this.lastNameLowerCase = lastNameLowerCase;
 	}
-	public String getLastActivity() {
+	public Date getLastActivity() {
 		return lastActivity;
 	}
-	public void setLastActivity(String lastActivity) {
+	public void setLastActivity(Date lastActivity) {
 		this.lastActivity = lastActivity;
 	}
 	public List<CustomFields> getCustomFields() {
@@ -268,5 +269,5 @@ public class Contact {
 				+ ", customFields=" + customFields + ", businessId=" + businessId + ", attributionSource="
 				+ attributionSource + ", lastAttributionSource=" + lastAttributionSource + "]";
 	}
-
+	
 }
