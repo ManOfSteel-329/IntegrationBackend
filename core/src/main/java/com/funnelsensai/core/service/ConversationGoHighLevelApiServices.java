@@ -3,6 +3,7 @@ package com.funnelsensai.core.service;
 import com.funnelsensai.core.domain.Conversation;
 import com.funnelsensai.core.dto.conversations.ConversationDto;
 import com.funnelsensai.core.repository.ConversationRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,12 +14,15 @@ import java.io.IOException;
 
 @Service
 public class ConversationGoHighLevelApiServices {
+    // Service class to manage GoHighLevel conversation fetch objects and Db actions.
 
     private ConversationDto conversationDto; //global variable to be use in other methods if need it
     private final ConversationRepository conversationRepository;
 
     private static final String API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582856/conversations/tDtDnQdgm2LXpyiqYvZ6";
-    private static final String API_KEY = "Bearer 123";  // Replace with actual API key
+
+    @Value("${goHighLevel.mockToken}")
+    private String API_KEY; // hard coded now but in the future this will be take it from the user from the security context
 
     private final OkHttpClient client = new OkHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();

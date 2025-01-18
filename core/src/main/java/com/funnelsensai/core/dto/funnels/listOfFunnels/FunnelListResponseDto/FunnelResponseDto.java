@@ -1,4 +1,4 @@
-package com.funnelsensai.core.dto.funnels.listOfFunnels;
+package com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,18 +14,15 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode
 @SuperBuilder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class FunnelListPagesDto {
-    @JsonProperty("_id")
-    private String pagesListId;
+public class FunnelResponseDto {
+    //Response object return a Funnel object with count and traceid attributes
 
-    private String locationId;
-    private String funnelId;
+    @JsonProperty("funnels")
+    private FunnelDto funnel;
 
-    @JsonProperty("name")
-    private String funnelName;
+    @JsonProperty("count")
+    private int count;
 
-    private String stepId;
-    private String deleted;
-    private String updatedAt;
-
+    @JsonProperty("traceId")
+    private String traceId;
 }

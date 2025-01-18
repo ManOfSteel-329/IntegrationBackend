@@ -10,7 +10,7 @@ import java.io.IOException;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/conversations")
 public class ConversationController {
 
     private final ConversationGoHighLevelApiServices goHighLevelService;
@@ -19,13 +19,17 @@ public class ConversationController {
         this.goHighLevelService = goHighLevelService;
     }
 
-    @GetMapping("/conversations")
+    @GetMapping("/get")
     public ConversationDto getConversations() throws IOException {
         return goHighLevelService.fetchConversation();
     }
 
-    @GetMapping("/conversations/save")
+    @GetMapping("/save")
     public ConversationDto saveConversation() throws IOException {
-        return goHighLevelService.saveConversation();
+        try {return goHighLevelService.saveConversation();}
+        catch (Exception e) {e.printStackTrace();
+
     }
-}
+        System.out.println("you're trying to save a conversation object doesn't exist yet, call the api first!");
+        return null;
+    }}
