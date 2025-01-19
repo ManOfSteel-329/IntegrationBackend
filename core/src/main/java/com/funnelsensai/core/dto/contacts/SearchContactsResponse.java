@@ -1,20 +1,28 @@
 package com.funnelsensai.core.dto.contacts;
 
+import java.util.List;
+
 public class SearchContactsResponse {
 	
-	private Contact contact;
-
-	public Contact getContact() {
-		return contact;
+	private List<Contacts> contacts;
+	private String total;
+	
+	public List<Contacts> getContacts() {
+		return contacts;
 	}
-
-	public void setContact(Contact contact) {
-		this.contact = contact;
+	public void setContacts(List<Contacts> contacts) {
+		this.contacts = contacts;
 	}
-
+	public String getTotal() {
+		return total;
+	}
+	public void setTotal(String total) {
+		this.total = total;
+	}
+	
 	@Override
 	public String toString() {
-		return "SearchContactsResponse [contact=" + contact + "]";
+		return "SearchContactsResponse [contacts=" + contacts + ", total=" + total + "]";
 	}
-
+	
 }

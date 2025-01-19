@@ -16,7 +16,7 @@ public class ApiController {
 		this.searchContactsService = searchContactsService;
 	}
 	
-	@PostMapping("GoHighLevel/Api/SearchContacts")
+	@PostMapping("gohighlevel/api/searchcontacts")
 	public SearchContactsResponse postSearchContactsResponse() {
 		return searchContactsService.postSearchContactsFromApi();
 	}
