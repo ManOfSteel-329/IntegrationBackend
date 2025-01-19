@@ -10,7 +10,7 @@ import java.io.IOException;
 
 
 @RestController
-@RequestMapping("/api/conversations")
+@RequestMapping("/auth/api/conversations")
 public class ConversationController {
 
     private final ConversationGoHighLevelApiServices goHighLevelService;

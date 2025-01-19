@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/funnel")
+@RequestMapping("auth/api/funnel")
 public class FunnelController {
 
     private final FunnelGoHighLevelApiServices funnelGoHighLevelApiServices;
