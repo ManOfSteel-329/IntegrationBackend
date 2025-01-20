@@ -5,6 +5,7 @@ import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.Fun
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelResponseDto;
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelStepDto;
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelPagesCountDto;
+import com.funnelsensai.core.repository.ConversationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -32,14 +33,19 @@ public class FunnelGoHighLevelApiServices {
     @Value("${goHighLevel.mockToken}")
     private String API_KEY; // hard coded now but in the future this will be take it from the user from the security context
 
-    private final OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
     private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public FunnelGoHighLevelApiServices( OkHttpClient client) {
+        // OkHttpClient client injected to be guarantee use in Mockito test
+        this.client = client;
+    }
 
     public FunnelResponseDto fetchFunnelsList() throws IOException {
         Request request = new Request.Builder()
                 .url(API_BASE_URL + FUNNEL_LIST_URL)
                 .get()
-                .addHeader("Authorization", API_KEY)
+                .addHeader("Authorization", "Bearer 123")
                 .addHeader("Prefer", "code=200, dynamic=true")
                 .addHeader("Accept", "application/json")
                 .build();
@@ -57,7 +63,7 @@ public class FunnelGoHighLevelApiServices {
         Request request = new Request.Builder()
                 .url(API_BASE_URL + FUNNEL_LIST_PAGES_URL)
                 .get()
-                .addHeader("Authorization", API_KEY)
+                .addHeader("Authorization", "Bearer 123")
                 .addHeader("Prefer", "code=200, dynamic=true")
                 .addHeader("Accept", "application/json")
                 .build();
@@ -76,7 +82,7 @@ public class FunnelGoHighLevelApiServices {
         Request request = new Request.Builder()
                 .url(API_BASE_URL + FUNNEL_LIST_PAGES_COUNT_URL)
                 .get()
-                .addHeader("Authorization", API_KEY)
+                .addHeader("Authorization", "Bearer 123")
                 .addHeader("Prefer", "code=200, dynamic=true")
                 .addHeader("Accept", "application/json")
                 .build();
@@ -90,6 +96,5 @@ public class FunnelGoHighLevelApiServices {
             return funnelPagesCountDto;
         }
     }
-
 
 }
