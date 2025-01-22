@@ -9,11 +9,18 @@ public class AppConfiguration {
     @Value("${gohighlevel.urls.base}")
     private String apiUrlBase;
 
+    @Value("${gohighlevel.urls.opportunity}")
+    private String apiUrlOpportunityEndpoint;
+
     @Value("${gohighlevel.urls.searchopportunity}")
     private String apiUrlSearchOpportunityEndpoint;
 
     public String getApiUrlBase() {
         return apiUrlBase;
+    }
+
+    public String getApiUrlOpportunityEndpoint() {
+        return apiUrlOpportunityEndpoint;
     }
 
     public String getApiUrlSearchOpportunityEndpoint() {
