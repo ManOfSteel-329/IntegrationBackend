@@ -19,39 +19,16 @@ import java.net.URI;
 @Service
 public class SearchOpportunityService {
 
-
-    public GetOpportunityResponse getOpportunityFromApi () throws IOException {
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://stoplight.io/mocks/highlevel/integrations/39582852/opportunities/yWQobCRIhRguQtD2llvk")
-                .get()
-                .addHeader("Authorization", "Bearer 123")
-                .addHeader("Version", "2021-07-28")
-                .addHeader("Accept", "application/json")
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                String responseBody = response.body().string();
-
-                return convertResponseToGetOpportunityResponse(responseBody);
-        } else {
-                System.out.println("Request failed with status: " + response.code());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+    private static final String SEARCH_OPPORTUNITY_API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582852/opportunities/search?location_id=i2SpAtBVHSVea1sL6oah";
+    private static final String SEARCH_OPPORTUNITY_API_KEY = "Bearer 123";
 
     public GetSearchOpportunityResponse getSearchOpportunityFromApi() throws IOException {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://stoplight.io/mocks/highlevel/integrations/39582852/opportunities/search?location_id=i2SpAtBVHSVea1sL6oah")
+                .url(SEARCH_OPPORTUNITY_API_URL)
                 .get()
-                .addHeader("Authorization", "Bearer 123")
+                .addHeader("Authorization", SEARCH_OPPORTUNITY_API_KEY)
                 .addHeader("Version", "2021-07-28")
                 .addHeader("Accept", "application/json")
                 .build();
@@ -70,16 +47,6 @@ public class SearchOpportunityService {
         return null;
     }
 
-    private static GetOpportunityResponse convertResponseToGetOpportunityResponse(String jsonResponse) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            return objectMapper.readValue(jsonResponse, GetOpportunityResponse.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private static GetSearchOpportunityResponse convertResponseToGetSearchOpportunityResponse(String jsonResponse) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -89,8 +56,6 @@ public class SearchOpportunityService {
             return null;
         }
     }
-
-
 
     private AppConfiguration appConfig;
 
