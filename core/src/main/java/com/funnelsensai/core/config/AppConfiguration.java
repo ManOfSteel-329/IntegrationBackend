@@ -6,25 +6,25 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AppConfiguration {
 
-    @Value("${gohighlevel.urls.base}")
-    private String apiUrlBase;
+    // @Value("${gohighlevel.urls.base}")
+    // private String apiUrlBase;
 
-    @Value("${gohighlevel.urls.opportunity}")
-    private String apiUrlOpportunityEndpoint;
+    // @Value("${gohighlevel.urls.opportunity}")
+    // private String apiUrlOpportunityEndpoint;
 
-    @Value("${gohighlevel.urls.searchopportunity}")
-    private String apiUrlSearchOpportunityEndpoint;
+    // @Value("${gohighlevel.urls.searchopportunity}")
+    // private String apiUrlSearchOpportunityEndpoint;
 
-    public String getApiUrlBase() {
-        return apiUrlBase;
-    }
+    // public String getApiUrlBase() {
+    // return apiUrlBase;
+    // }
 
-    public String getApiUrlOpportunityEndpoint() {
-        return apiUrlOpportunityEndpoint;
-    }
+    // public String getApiUrlOpportunityEndpoint() {
+    // return apiUrlOpportunityEndpoint;
+    // }
 
-    public String getApiUrlSearchOpportunityEndpoint() {
-        return apiUrlSearchOpportunityEndpoint;
-    }
+    // public String getApiUrlSearchOpportunityEndpoint() {
+    // return apiUrlSearchOpportunityEndpoint;
+    // }
 
 }

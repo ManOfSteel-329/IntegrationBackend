@@ -22,7 +22,7 @@ public class OpportunityService {
     private static final String OPPORTUNITY_API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582852/opportunities/yWQobCRIhRguQtD2llvk";
     private static final String OPPORTUNITY_API_KEY = "Bearer 123";
 
-    public GetOpportunityResponse getOpportunityFromApi () throws IOException {
+    public GetOpportunityResponse getOpportunityFromApi() throws IOException {
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -37,9 +37,8 @@ public class OpportunityService {
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
-
                 return convertResponseToGetOpportunityResponse(responseBody);
-        } else {
+            } else {
                 System.out.println("Request failed with status: " + response.code());
             }
         } catch (IOException e) {
@@ -58,21 +57,20 @@ public class OpportunityService {
         }
     }
 
-//    public GetOpportunityResponse getOpportunityFromGoHighLevelAPI(OpportunityRequest oppRequest) {
-//
-//        RestTemplate restTemplate1 = new RestTemplate();
-//
-//        URI opportunityUri = UriComponentsBuilder.fromHttpUrl(appConfig.getApiUrlBase()+appConfig.getApiUrlOpportunityEndpoint())
-//                .queryParam("id", oppRequest.getId())
-//                .build()
-//                .toUri();
-//
-//        ResponseEntity<GetOpportunityResponse> opportunityResponse = restTemplate1.getForEntity(opportunityUri, GetOpportunityResponse.class);
-//        return opportunityResponse.getBody();
-//    }
-
-
-
-
+    // public GetOpportunityResponse
+    // getOpportunityFromGoHighLevelAPI(OpportunityRequest oppRequest) {
+    //
+    // RestTemplate restTemplate1 = new RestTemplate();
+    //
+    // URI opportunityUri =
+    // UriComponentsBuilder.fromHttpUrl(appConfig.getApiUrlBase()+appConfig.getApiUrlOpportunityEndpoint())
+    // .queryParam("id", oppRequest.getId())
+    // .build()
+    // .toUri();
+    //
+    // ResponseEntity<GetOpportunityResponse> opportunityResponse =
+    // restTemplate1.getForEntity(opportunityUri, GetOpportunityResponse.class);
+    // return opportunityResponse.getBody();
+    // }
 
 }

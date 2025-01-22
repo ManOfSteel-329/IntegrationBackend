@@ -27,17 +27,20 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final List<String> ALLOWED_METHODS = Arrays.asList(GET.name(), POST.name(), PUT.name(), PATCH.name(), DELETE.name(), OPTIONS.name());
+    private final List<String> ALLOWED_METHODS = Arrays.asList(GET.name(), POST.name(), PUT.name(), PATCH.name(),
+            DELETE.name(), OPTIONS.name());
     private final String BASE_PATH = "/**";
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
@@ -51,17 +54,18 @@ public class SecurityConfig {
         return authProvider;
     }
 
-
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authorizeHttpRequests(request ->
-                        request.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers(OPTIONS).permitAll()
-                                .anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/auth/**", "/highlevel/api/getopportunity",
+                                "/highlevel/api/searchopportunity")
+                        .permitAll()
+                        .requestMatchers(OPTIONS).permitAll()
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
@@ -71,7 +75,7 @@ public class SecurityConfig {
         var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(List.of(
-                "https://funnelsensai.com", // front-end URL   (eg back-end URL: https://api.funnelsensai.com)
+                "https://funnelsensai.com", // front-end URL (eg back-end URL: https://api.funnelsensai.com)
                 "https://dev.funnelsensai.com",
                 "http://localhost:5173"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
