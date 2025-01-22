@@ -15,10 +15,14 @@ import okhttp3.Response;
 
 @Service
 public class SearchContactsService {
+	
+	private final OkHttpClient client;
+	
+	public SearchContactsService(OkHttpClient client) {
+			this.client = client;
+}
 
 	public SearchContactsResponse postSearchContactsFromApi() {
-		OkHttpClient client = new OkHttpClient();
-
 		MediaType mediaType = MediaType.parse("application/json");
 		RequestBody body = RequestBody.create("{}", mediaType);
 
