@@ -13,16 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
-public class CalendarEventController {
+public class GoHighLevelApiController {
 
     private final CalendarEventService calendarEventService;
 
 
-    public CalendarEventController(CalendarEventService calendarEventService) {
+    public GoHighLevelApiController(CalendarEventService calendarEventService) {
         this.calendarEventService = calendarEventService;
     }
 
-    @GetMapping("/api/calendar-events")
+
+    @GetMapping("highlevel/api/getcalendarevents")
     public ResponseEntity<List<CalendarEvent>> getCalendarEvents(
             @AuthenticationPrincipal User user,
             @RequestHeader(value = "Authorization", required = true) String bearerToken,
