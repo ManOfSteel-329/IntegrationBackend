@@ -1,4 +1,4 @@
-package com.funnelsensai.core.configuration;
+package com.funnelsensai.core.config;
 
 import java.util.concurrent.TimeUnit;
 
