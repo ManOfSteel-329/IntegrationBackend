@@ -1,10 +1,8 @@
 package com.funnelsensai.core.config;
-
-import okhttp3.OkHttpClient;
+import java.util.concurrent.TimeUnit;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.concurrent.TimeUnit;
+import okhttp3.OkHttpClient;
 
 @Configuration
 public class OkHttpClientConfig {
