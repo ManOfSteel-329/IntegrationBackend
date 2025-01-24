@@ -8,13 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class OkHttpClientConfig {
-    // Config class created to inject OkHttpClient as a Spring bean to run Mockito tests. Before i was having problem
-    // to run tests successfully.
 
-//    @Bean
-//    public OkHttpClient okHttpClient() {
-//        return new OkHttpClient.Builder().build(); // Creates an OkHttpClient bean
-//    }
     @Bean
     public OkHttpClient okHttpClient() {
         return new OkHttpClient.Builder()
