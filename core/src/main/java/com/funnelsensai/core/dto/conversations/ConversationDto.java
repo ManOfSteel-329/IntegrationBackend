@@ -2,17 +2,8 @@ package com.funnelsensai.core.dto.conversations;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@EqualsAndHashCode
-@SuperBuilder
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ConversationDto {
     // The values for this Dto can be generated statically or dynamically
@@ -28,4 +19,75 @@ public class ConversationDto {
     private String conversationId;
     private String starred;
 
+    public String getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(String contactId) {
+        this.contactId = contactId;
+    }
+
+    public String getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(String locationId) {
+        this.locationId = locationId;
+    }
+
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Boolean getInbox() {
+        return inbox;
+    }
+
+    public void setInbox(Boolean inbox) {
+        this.inbox = inbox;
+    }
+
+    public Float getType() {
+        return type;
+    }
+
+    public void setType(Float type) {
+        this.type = type;
+    }
+
+    public Float getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(Float unreadCount) {
+        this.unreadCount = unreadCount;
+    }
+
+    public String getAssignedTo() {
+        return assignedTo;
+    }
+
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
+
+    public String getStarred() {
+        return starred;
+    }
+
+    public void setStarred(String starred) {
+        this.starred = starred;
+    }
 }

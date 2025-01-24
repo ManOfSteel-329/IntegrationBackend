@@ -4,13 +4,22 @@ import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.concurrent.TimeUnit;
+
 @Configuration
 public class OkHttpClientConfig {
     // Config class created to inject OkHttpClient as a Spring bean to run Mockito tests. Before i was having problem
     // to run tests successfully.
 
+//    @Bean
+//    public OkHttpClient okHttpClient() {
+//        return new OkHttpClient.Builder().build(); // Creates an OkHttpClient bean
+//    }
     @Bean
     public OkHttpClient okHttpClient() {
-        return new OkHttpClient.Builder().build(); // Creates an OkHttpClient bean
+        return new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
     }
 }
