@@ -5,7 +5,6 @@ import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.Fun
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelResponseDto;
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelStepDto;
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelPagesCountDto;
-import com.funnelsensai.core.repository.ConversationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

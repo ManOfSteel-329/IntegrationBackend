@@ -1,14 +1,13 @@
 package com.funnelsensai.core.service;
 
-import com.funnelsensai.core.domain.Conversation;
 import com.funnelsensai.core.dto.conversations.ConversationDto;
-import com.funnelsensai.core.repository.ConversationRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 @Service
@@ -16,7 +15,10 @@ public class ConversationGoHighLevelApiServices {
     // Service class to manage GoHighLevel conversation fetch objects and Db actions.
 
     private ConversationDto conversationDto; //global variable to be use in other methods if need it
-    private final ConversationRepository conversationRepository;
+
+
+    //To simulate Db
+    Map<Integer,ConversationDto> conversations;
 
     private static final String API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582856/conversations/tDtDnQdgm2LXpyiqYvZ6";
 //
@@ -26,9 +28,8 @@ public class ConversationGoHighLevelApiServices {
     private OkHttpClient client;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ConversationGoHighLevelApiServices(ConversationRepository conversationRepository, OkHttpClient client) {
+    public ConversationGoHighLevelApiServices( OkHttpClient client) {
         // OkHttpClient client injected to be guarantee use in Mockito test
-        this.conversationRepository = conversationRepository;
         this.client = client;
     }
 
@@ -53,24 +54,4 @@ public class ConversationGoHighLevelApiServices {
         }
     }
 
-    public ConversationDto saveConversation() throws IOException {
-        // Setting the entity with the Dto values
-        Conversation conversation = new Conversation();
-        conversationRepository.save(conversation);
-
-        conversation.setContactId(conversationDto.getContactId());
-        conversation.setLocationId(conversationDto.getLocationId());
-        conversation.setDeleted(conversationDto.getDeleted());
-        conversation.setInbox(conversationDto.getInbox());
-        conversation.setType(conversationDto.getType());
-        conversation.setUnreadCount(conversationDto.getUnreadCount());
-        conversation.setAssignedTo(conversationDto.getAssignedTo());
-        conversation.setConversationId(conversationDto.getConversationId());
-        conversation.setStarred(conversationDto.getStarred());
-
-        conversationRepository.save(conversation);
-
-        return conversationDto;
-
-    }
 }

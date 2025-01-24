@@ -54,7 +54,6 @@ public class AuthController {
             tokens.put("accessToken", accessToken);
             tokens.put("refreshToken", refreshToken);
 
-            System.out.println("user succesfully logged in"+ authRequest.getUsername()); //todo: delete later :)
             return tokens;
         } catch (AuthenticationException ex) {
             throw new RuntimeException("Invalid username or password");
@@ -63,7 +62,6 @@ public class AuthController {
 
     @PostMapping("/createUser")
     public User createUser (@RequestBody AuthRequest authRequest) {
-        System.out.println("user succesfully created: --->" + authRequest.getUsername()); //todo: delete later :)
         return userService.createUser(authRequest.getUsername(), authRequest.getPassword());
 
     }

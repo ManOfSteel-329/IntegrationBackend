@@ -23,13 +23,4 @@ public class ConversationController {
     public ConversationDto getConversations() throws IOException {
         return goHighLevelService.fetchConversation();
     }
-
-    @GetMapping("/save")
-    public ConversationDto saveConversation() throws IOException {
-        try {return goHighLevelService.saveConversation();}
-        catch (Exception e) {e.printStackTrace();
-
-    }
-        System.out.println("you're trying to save a conversation object doesn't exist yet, call the api first!");
-        return null;
-    }}
+}
