@@ -18,6 +18,16 @@ public class Roles {
     @JsonProperty("restrictSubAccount")
     private boolean restrictSubAccount;
 
+    public Roles() {
+    }
+
+    public Roles(String type, String role, List<String> locationIds, boolean restrictSubAccount) {
+        this.type = type;
+        this.role = role;
+        this.locationIds = locationIds;
+        this.restrictSubAccount = restrictSubAccount;
+    }
+
     public String getType() {
         return type;
     }
@@ -48,6 +58,17 @@ public class Roles {
 
     public void setRestrictSubAccount(boolean restrictSubAccount) {
         this.restrictSubAccount = restrictSubAccount;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Roles{" +
+                "type='" + type + '\'' +
+                ", role='" + role + '\'' +
+                ", locationIds=" + locationIds +
+                ", restrictSubAccount=" + restrictSubAccount +
+                '}';
     }
 }
 

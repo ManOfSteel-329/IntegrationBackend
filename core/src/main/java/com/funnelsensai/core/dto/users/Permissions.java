@@ -119,6 +119,49 @@ public class Permissions {
     @JsonProperty("exportPaymentsEnabled")
     private boolean exportPaymentsEnabled;
 
+    public Permissions() {
+    }
+
+    public Permissions(boolean campaignsEnabled, boolean campaignsReadOnly, boolean contactsEnabled, boolean workflowsEnabled, boolean workflowsReadOnly, boolean triggersEnabled, boolean funnelsEnabled, boolean websitesEnabled, boolean opportunitiesEnabled, boolean dashboardStatsEnabled, boolean bulkRequestsEnabled, boolean appointmentsEnabled, boolean reviewsEnabled, boolean onlineListingsEnabled, boolean phoneCallEnabled, boolean conversationsEnabled, boolean assignedDataOnly, boolean adwordsReportingEnabled, boolean membershipEnabled, boolean facebookAdsReportingEnabled, boolean attributionsReportingEnabled, boolean settingsEnabled, boolean tagsEnabled, boolean leadValueEnabled, boolean marketingEnabled, boolean agentReportingEnabled, boolean botService, boolean socialPlanner, boolean bloggingEnabled, boolean invoiceEnabled, boolean affiliateManagerEnabled, boolean contentAiEnabled, boolean refundsEnabled, boolean recordPaymentEnabled, boolean cancelSubscriptionEnabled, boolean paymentsEnabled, boolean communitiesEnabled, boolean exportPaymentsEnabled) {
+        this.campaignsEnabled = campaignsEnabled;
+        this.campaignsReadOnly = campaignsReadOnly;
+        this.contactsEnabled = contactsEnabled;
+        this.workflowsEnabled = workflowsEnabled;
+        this.workflowsReadOnly = workflowsReadOnly;
+        this.triggersEnabled = triggersEnabled;
+        this.funnelsEnabled = funnelsEnabled;
+        this.websitesEnabled = websitesEnabled;
+        this.opportunitiesEnabled = opportunitiesEnabled;
+        this.dashboardStatsEnabled = dashboardStatsEnabled;
+        this.bulkRequestsEnabled = bulkRequestsEnabled;
+        this.appointmentsEnabled = appointmentsEnabled;
+        this.reviewsEnabled = reviewsEnabled;
+        this.onlineListingsEnabled = onlineListingsEnabled;
+        this.phoneCallEnabled = phoneCallEnabled;
+        this.conversationsEnabled = conversationsEnabled;
+        this.assignedDataOnly = assignedDataOnly;
+        this.adwordsReportingEnabled = adwordsReportingEnabled;
+        this.membershipEnabled = membershipEnabled;
+        this.facebookAdsReportingEnabled = facebookAdsReportingEnabled;
+        this.attributionsReportingEnabled = attributionsReportingEnabled;
+        this.settingsEnabled = settingsEnabled;
+        this.tagsEnabled = tagsEnabled;
+        this.leadValueEnabled = leadValueEnabled;
+        this.marketingEnabled = marketingEnabled;
+        this.agentReportingEnabled = agentReportingEnabled;
+        this.botService = botService;
+        this.socialPlanner = socialPlanner;
+        this.bloggingEnabled = bloggingEnabled;
+        this.invoiceEnabled = invoiceEnabled;
+        this.affiliateManagerEnabled = affiliateManagerEnabled;
+        this.contentAiEnabled = contentAiEnabled;
+        this.refundsEnabled = refundsEnabled;
+        this.recordPaymentEnabled = recordPaymentEnabled;
+        this.cancelSubscriptionEnabled = cancelSubscriptionEnabled;
+        this.paymentsEnabled = paymentsEnabled;
+        this.communitiesEnabled = communitiesEnabled;
+        this.exportPaymentsEnabled = exportPaymentsEnabled;
+    }
 
     public boolean isCampaignsEnabled() {
         return campaignsEnabled;
@@ -422,6 +465,50 @@ public class Permissions {
 
     public void setExportPaymentsEnabled(boolean exportPaymentsEnabled) {
         this.exportPaymentsEnabled = exportPaymentsEnabled;
+    }
+
+    @Override
+    public String toString() {
+        return "Permissions{" +
+                "campaignsEnabled=" + campaignsEnabled +
+                ", campaignsReadOnly=" + campaignsReadOnly +
+                ", contactsEnabled=" + contactsEnabled +
+                ", workflowsEnabled=" + workflowsEnabled +
+                ", workflowsReadOnly=" + workflowsReadOnly +
+                ", triggersEnabled=" + triggersEnabled +
+                ", funnelsEnabled=" + funnelsEnabled +
+                ", websitesEnabled=" + websitesEnabled +
+                ", opportunitiesEnabled=" + opportunitiesEnabled +
+                ", dashboardStatsEnabled=" + dashboardStatsEnabled +
+                ", bulkRequestsEnabled=" + bulkRequestsEnabled +
+                ", appointmentsEnabled=" + appointmentsEnabled +
+                ", reviewsEnabled=" + reviewsEnabled +
+                ", onlineListingsEnabled=" + onlineListingsEnabled +
+                ", phoneCallEnabled=" + phoneCallEnabled +
+                ", conversationsEnabled=" + conversationsEnabled +
+                ", assignedDataOnly=" + assignedDataOnly +
+                ", adwordsReportingEnabled=" + adwordsReportingEnabled +
+                ", membershipEnabled=" + membershipEnabled +
+                ", facebookAdsReportingEnabled=" + facebookAdsReportingEnabled +
+                ", attributionsReportingEnabled=" + attributionsReportingEnabled +
+                ", settingsEnabled=" + settingsEnabled +
+                ", tagsEnabled=" + tagsEnabled +
+                ", leadValueEnabled=" + leadValueEnabled +
+                ", marketingEnabled=" + marketingEnabled +
+                ", agentReportingEnabled=" + agentReportingEnabled +
+                ", botService=" + botService +
+                ", socialPlanner=" + socialPlanner +
+                ", bloggingEnabled=" + bloggingEnabled +
+                ", invoiceEnabled=" + invoiceEnabled +
+                ", affiliateManagerEnabled=" + affiliateManagerEnabled +
+                ", contentAiEnabled=" + contentAiEnabled +
+                ", refundsEnabled=" + refundsEnabled +
+                ", recordPaymentEnabled=" + recordPaymentEnabled +
+                ", cancelSubscriptionEnabled=" + cancelSubscriptionEnabled +
+                ", paymentsEnabled=" + paymentsEnabled +
+                ", communitiesEnabled=" + communitiesEnabled +
+                ", exportPaymentsEnabled=" + exportPaymentsEnabled +
+                '}';
     }
 }
 
