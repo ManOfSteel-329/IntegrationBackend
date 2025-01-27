@@ -17,10 +17,15 @@ public class GetUserService {
         private static final String API_VERSION = "2021-07-28";
         private static final String TOKEN = "9c48df2694a849b6089f9d0d3513efe";
 
-        private final OkHttpClient client = new OkHttpClient();
-        private final ObjectMapper objectMapper = new ObjectMapper();
+        private OkHttpClient client = new OkHttpClient();
+        private ObjectMapper objectMapper = new ObjectMapper();
 
-        public UserDTO fetchUserDTO() throws IOException {
+    public GetUserService(OkHttpClient client, ObjectMapper objectMapper) {
+        this.client = client;
+        this.objectMapper = objectMapper;
+    }
+
+    public UserDTO fetchUserDTO() throws IOException {
             UserDTO userDTO;
             Request request = new Request.Builder()
                     .url(API_URL)
