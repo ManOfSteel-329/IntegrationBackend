@@ -1,5 +1,11 @@
 package com.funnelsensai.core.web;
 
+import java.io.IOException;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.dto.CalendarEvent.CalendarEvent;
 import com.funnelsensai.core.dto.contacts.SearchContactsResponse;
@@ -29,31 +35,34 @@ public class GoHighLevelApiController {
     private final CalendarEventService calendarEventService;
     public SearchContactsService searchContactsService;
 
-    
-
-    public GoHighLevelApiController(OpportunityService opportunityService, SearchOpportunityService searchOpportunityService, 
-    SearchContactsService searchContactsService, CalendarEventService calendarEventService) {
-		super();
-		this.opportunityService = opportunityService;
-		this.searchOpportunityService = searchOpportunityService;
-		this.searchContactsService = searchContactsService;
+    public GoHighLevelApiController(OpportunityService opportunityService,
+            SearchOpportunityService searchOpportunityService,
+            SearchContactsService searchContactsService, CalendarEventService calendarEventService) {
+        super();
+        this.opportunityService = opportunityService;
+        this.searchOpportunityService = searchOpportunityService;
+        this.searchContactsService = searchContactsService;
         this.calendarEventService = calendarEventService;
-	}
+    }
 
-	@GetMapping("/highlevel/api/getopportunity")
+    @GetMapping("/highlevel/api/getopportunity")
     public GetOpportunityResponse getOpportunity() throws IOException {
-        return opportunityService.getOpportunityFromApi();
+        GetOpportunityResponse response = opportunityService.getOpportunityFromApi();
+        System.out.println("Response: " + response);
+        return response;
     }
 
     @GetMapping("/highlevel/api/searchopportunity")
     public GetSearchOpportunityResponse getSearchOpportunity() throws IOException {
-        return searchOpportunityService.getSearchOpportunityFromApi();
+        GetSearchOpportunityResponse response = searchOpportunityService.getSearchOpportunityFromApi();
+        System.out.println("Response: " + response);
+        return response;
     }
-    
-	@PostMapping("/highlevel/api/searchcontacts")
-	public SearchContactsResponse postSearchContactsResponse() {
-		return searchContactsService.postSearchContactsFromApi();
-	}
+
+    @PostMapping("/highlevel/api/searchcontacts")
+    public SearchContactsResponse postSearchContactsResponse() {
+        return searchContactsService.postSearchContactsFromApi();
+    }
 
     @GetMapping("/highlevel/api/getcalendarevents")
     public ResponseEntity<List<CalendarEvent>> getCalendarEvents(
@@ -83,6 +92,5 @@ public class GoHighLevelApiController {
             return ResponseEntity.badRequest().build();
         }
     }
-
 
 }
