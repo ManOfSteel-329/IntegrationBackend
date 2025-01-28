@@ -15,6 +15,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String username;
     private String password;
+    private String userApiKey; //todo: this field is going store the user key to request all info from GoHighLevel API
 
     public User(String username, String password) {
         this.username = username;
