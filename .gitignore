@@ -25,5 +25,5 @@ replay_pid*
 /.idea
 core/src/main/resources/application.properties
 core/src/main/resources/application-dev.properties
-*.properties
+
 
