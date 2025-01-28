@@ -1,25 +1,23 @@
 package com.funnelsensai.core.service;
 
-import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListPagesDto;
-import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelDto;
-import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelResponseDto;
-import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelStepDto;
-import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelPagesCountDto;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import okhttp3.*;
+import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListPagesDto;
+import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelPagesCountDto;
+import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelResponseDto;
 
-import java.io.IOException;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @Service
 public class FunnelGoHighLevelApiServices {
-    //Service class to manage Funnel Objects fetch from GoHighLevelApi (Objects: FunnelList, FunnelListPages, PagesCount)
-
-    private FunnelResponseDto funnelResponseDto;
-    private FunnelDto funnelDto;
-    private FunnelStepDto stepDto;
+    // Service class to manage Funnel Objects fetch from GoHighLevelApi (Objects:
+    // FunnelList, FunnelListPages, PagesCount)
 
     private FunnelListPagesDto funnelListPagesDto;
     private FunnelPagesCountDto funnelPagesCountDto;
@@ -30,12 +28,13 @@ public class FunnelGoHighLevelApiServices {
     private static final String FUNNEL_LIST_PAGES_COUNT_URL = "page/count?funnelId=iucJ6TdFZiddhq9f6znh&locationId=ojQjykmwNIU88vfsfzvH";
 
     @Value("${goHighLevel.mockToken}")
-    private String API_KEY; // hard coded now but in the future this will be take it from the user from the security context
+    private String API_KEY; // hard coded now but in the future this will be take it from the user from the
+                            // security context
 
     private OkHttpClient client;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public FunnelGoHighLevelApiServices( OkHttpClient client) {
+    public FunnelGoHighLevelApiServices(OkHttpClient client) {
         // OkHttpClient client injected to be guarantee use in Mockito test
         this.client = client;
     }

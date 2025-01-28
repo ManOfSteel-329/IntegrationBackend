@@ -10,19 +10,22 @@ import java.util.Objects;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String username;
     private String password;
-    private String userApiKey; //todo: this field is going store the user key to request all info from GoHighLevel API
+    // private String userApiKey; //todo: this field is going store the user key to
+    // request all info from GoHighLevel API
 
     public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public User () {}
+    public User() {
+    }
 
     public Long getId() {
         return id;
@@ -75,8 +78,10 @@ public class User implements UserDetails {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         User user = (User) o;
         return Objects.equals(id, user.id);
     }

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.lang.NonNull;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,7 +32,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         String accessToken = CookieUtils.getTokenFromCookie(request, "accessToken");
         String refreshToken = CookieUtils.getTokenFromCookie(request, "refreshToken");
@@ -48,15 +52,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(accessToken)) {
                 String username = jwtUtil.getUsernameFromToken(accessToken);
-                User user = (User) userDetailsService.loadUserByUsername(username); // Note: THIS IS INEFFICIENT!!! At some point we should consider using caching
+                User user = (User) userDetailsService.loadUserByUsername(username); // Note: THIS IS INEFFICIENT!!! At
+                                                                                    // some point we should consider
+                                                                                    // using caching
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         user, null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication); // This is the code that actually "logs the user in"
+                SecurityContextHolder.getContext().setAuthentication(authentication); // This is the code that actually
+                                                                                      // "logs the user in"
             }
         }
         filterChain.doFilter(request, response);
     }
-
 
 }

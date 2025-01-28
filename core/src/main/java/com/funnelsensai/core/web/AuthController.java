@@ -1,21 +1,25 @@
 package com.funnelsensai.core.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.security.util.JwtUtil;
 import com.funnelsensai.core.service.UserService;
 import com.funnelsensai.core.util.CookieUtils;
 import com.funnelsensai.core.web.request.AuthRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/auth")
@@ -30,7 +34,8 @@ public class AuthController {
     @Value("${jwt.refresh.token.expiry}")
     private int refreshTokenExpiry;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService,
+            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
@@ -39,8 +44,9 @@ public class AuthController {
     @PostMapping("/login")
     public Map<String, String> login(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
         try {
-            // String encodedPassword = bCryptPasswordEncoder.encode(authRequest.getPassword());
-            Authentication authentication = authenticationManager.authenticate(
+            // String encodedPassword =
+            // bCryptPasswordEncoder.encode(authRequest.getPassword());
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 
             String accessToken = jwtUtil.generateAccessToken(authRequest.getUsername());
@@ -61,7 +67,7 @@ public class AuthController {
     }
 
     @PostMapping("/createUser")
-    public User createUser (@RequestBody AuthRequest authRequest) {
+    public User createUser(@RequestBody AuthRequest authRequest) {
         return userService.createUser(authRequest.getUsername(), authRequest.getPassword());
 
     }

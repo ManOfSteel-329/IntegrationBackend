@@ -2,7 +2,9 @@ package com.funnelsensai.core.web;
 
 import com.funnelsensai.core.dto.opportunities.GetOpportunityResponse;
 import com.funnelsensai.core.dto.opportunities.GetSearchOpportunityResponse;
+import com.funnelsensai.core.service.CalendarEventService;
 import com.funnelsensai.core.service.OpportunityService;
+import com.funnelsensai.core.service.SearchContactsService;
 import com.funnelsensai.core.service.SearchOpportunityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +27,21 @@ class GoHighLevelApiControllerTest {
     @Mock
     private SearchOpportunityService searchOpportunityService;
 
+    @Mock
+    private SearchContactsService searchContactsService;
+
+    @Mock
+    private CalendarEventService calendarEventService;
+
     private GoHighLevelApiController controller;
 
     @BeforeEach
     void setUp() {
-        controller = new GoHighLevelApiController(opportunityService, searchOpportunityService);
+        controller = new GoHighLevelApiController(
+                opportunityService,
+                searchOpportunityService,
+                searchContactsService,
+                calendarEventService);
     }
 
     @Test

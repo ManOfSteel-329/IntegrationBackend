@@ -1,21 +1,20 @@
 package com.funnelsensai.core.web.request;
 
 import com.funnelsensai.core.dto.conversations.ConversationDto;
-import com.funnelsensai.core.service.ConversationGoHighLevelApiServices;
+import com.funnelsensai.core.service.ConversationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 
-
 @RestController
 @RequestMapping("/auth/api/conversations")
 public class ConversationController {
 
-    private final ConversationGoHighLevelApiServices goHighLevelService;
+    private final ConversationService goHighLevelService;
 
-    public ConversationController(ConversationGoHighLevelApiServices goHighLevelService) {
+    public ConversationController(ConversationService goHighLevelService) {
         this.goHighLevelService = goHighLevelService;
     }
 

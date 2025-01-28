@@ -1,9 +1,5 @@
 package com.funnelsensai.core.dto.opportunities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
-
 public class SearchOpportunityRequest {
 
     private String location_id;

@@ -1,20 +1,7 @@
 package com.funnelsensai.core.web;
 
 import java.io.IOException;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.funnelsensai.core.domain.User;
-import com.funnelsensai.core.dto.CalendarEvent.CalendarEvent;
-import com.funnelsensai.core.dto.contacts.SearchContactsResponse;
-import com.funnelsensai.core.dto.opportunities.GetOpportunityResponse;
-import com.funnelsensai.core.dto.opportunities.GetSearchOpportunityResponse;
-import com.funnelsensai.core.service.OpportunityService;
-import com.funnelsensai.core.service.SearchContactsService;
-import com.funnelsensai.core.service.SearchOpportunityService;
-import com.funnelsensai.core.service.CalendarEventService;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,8 +11,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.List;
+import com.funnelsensai.core.domain.User;
+import com.funnelsensai.core.dto.CalendarEvent.CalendarEvent;
+import com.funnelsensai.core.dto.contacts.SearchContactsResponse;
+import com.funnelsensai.core.dto.opportunities.GetOpportunityResponse;
+import com.funnelsensai.core.dto.opportunities.GetSearchOpportunityResponse;
+import com.funnelsensai.core.service.CalendarEventService;
+import com.funnelsensai.core.service.OpportunityService;
+import com.funnelsensai.core.service.SearchContactsService;
+import com.funnelsensai.core.service.SearchOpportunityService;
 
 @RestController
 public class GoHighLevelApiController {
