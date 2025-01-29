@@ -9,26 +9,26 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.Map;
 
-
 @Service
-public class ConversationGoHighLevelApiServices {
-    // Service class to manage GoHighLevel conversation fetch objects and Db actions.
+public class ConversationService {
+    // Service class to manage GoHighLevel conversation fetch objects and Db
+    // actions.
 
-    private ConversationDto conversationDto; //global variable to be use in other methods if need it
+    private ConversationDto conversationDto; // global variable to be use in other methods if need it
 
-
-    //To simulate Db
-    Map<Integer,ConversationDto> conversations;
+    // To simulate Db
+    Map<Integer, ConversationDto> conversations;
 
     private static final String API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582856/conversations/tDtDnQdgm2LXpyiqYvZ6";
-//
+    //
     @Value("${goHighLevel.mockToken}")
-    private String API_KEY; // hard coded now but in the future this will be take it from the user from the security context
+    private String API_KEY; // hard coded now but in the future this will be take it from the user from the
+                            // security context
 
     private OkHttpClient client;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public ConversationGoHighLevelApiServices( OkHttpClient client) {
+    public ConversationService(OkHttpClient client) {
         // OkHttpClient client injected to be guarantee use in Mockito test
         this.client = client;
     }
@@ -37,7 +37,7 @@ public class ConversationGoHighLevelApiServices {
         Request request = new Request.Builder()
                 .url(API_URL)
                 .get()
-                .addHeader("Authorization", "Bearer 123")//manually injected because of Mockito tests
+                .addHeader("Authorization", "Bearer 123")// manually injected because of Mockito tests
                 .addHeader("Version", "2021-04-15")
                 .addHeader("Prefer", "code=200,dynamic=true")
                 .addHeader("Accept", "application/json")

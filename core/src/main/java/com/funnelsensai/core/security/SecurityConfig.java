@@ -61,8 +61,7 @@ public class SecurityConfig {
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/auth/**", "/highlevel/api/searchcontacts",
-                                "/highlevel/api/searchopportunity")
+                        .requestMatchers("/auth/**")
                         .permitAll()
                         .requestMatchers(OPTIONS).permitAll()
                         .anyRequest().authenticated())

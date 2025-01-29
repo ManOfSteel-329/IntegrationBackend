@@ -1,7 +1,7 @@
 package mockitoTests;
 
 import com.funnelsensai.core.dto.conversations.ConversationDto;
-import com.funnelsensai.core.service.ConversationGoHighLevelApiServices;
+import com.funnelsensai.core.service.ConversationService;
 import okhttp3.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,12 +19,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ConversationApiEndPointConnTest {
 
-
     @Mock
     private OkHttpClient client; // Mocking HTTP client
 
     @InjectMocks
-    private ConversationGoHighLevelApiServices conversationService;
+    private ConversationService conversationService;
 
     private Call call;
     private Response response;
@@ -39,16 +38,16 @@ public class ConversationApiEndPointConnTest {
 
         // Setup default successful response
         String validJson = "{" +
-            "\"contactId\":\"string\"," +
-            "\"locationId\":\"string\"," +
-            "\"deleted\":true," +
-            "\"inbox\":true," +
-            "\"type\":0," +
-            "\"unreadCount\":0," +
-            "\"assignedTo\":\"string\"," +
-            "\"id\":\"string\"," +
-            "\"starred\":\"true\"" +
-        "}";
+                "\"contactId\":\"string\"," +
+                "\"locationId\":\"string\"," +
+                "\"deleted\":true," +
+                "\"inbox\":true," +
+                "\"type\":0," +
+                "\"unreadCount\":0," +
+                "\"assignedTo\":\"string\"," +
+                "\"id\":\"string\"," +
+                "\"starred\":\"true\"" +
+                "}";
 
         // Setup the complete chain in correct order
         lenient().when(client.newCall(any())).thenReturn(call);
@@ -58,7 +57,6 @@ public class ConversationApiEndPointConnTest {
         lenient().when(responseBody.string()).thenReturn(validJson);
     }
 
-
     @Test
     void testFetchConversation() throws IOException {
         ConversationDto fetchedConversation = conversationService.fetchConversation();
@@ -67,6 +65,7 @@ public class ConversationApiEndPointConnTest {
         assertEquals(fetchedConversation.getInbox(), true);
         verify(client, times(1)).newCall(any(Request.class));
     }
+
     @Test
     void testFetchConversation_CorrectDtoMapping() throws IOException {
         ConversationDto fetchedConversation = conversationService.fetchConversation();
@@ -84,14 +83,15 @@ public class ConversationApiEndPointConnTest {
 
         verify(client, times(1)).newCall(any(Request.class));
     }
-     @Test
+
+    @Test
     void testFetchConversation_WhenApiCallFails() throws IOException {
         // Reset the response for this specific test
         Response failedResponse = mock(Response.class);
         when(failedResponse.isSuccessful()).thenReturn(false);
         when(failedResponse.code()).thenReturn(500);
         when(call.execute()).thenReturn(failedResponse);
-        
+
         assertThrows(IOException.class, () -> {
             conversationService.fetchConversation();
         });
@@ -102,7 +102,7 @@ public class ConversationApiEndPointConnTest {
     void testFetchConversation_WithNetworkTimeout() throws IOException {
         // Mock network timeout
         when(call.execute()).thenThrow(new IOException("Network timeout"));
-        
+
         assertThrows(IOException.class, () -> {
             conversationService.fetchConversation();
         });
@@ -112,7 +112,7 @@ public class ConversationApiEndPointConnTest {
     void testFetchConversation_WithInvalidJson() throws IOException {
         // Mock invalid JSON response
         when(responseBody.string()).thenReturn("invalid json");
-        
+
         assertThrows(Exception.class, () -> {
             conversationService.fetchConversation();
         });
@@ -122,7 +122,7 @@ public class ConversationApiEndPointConnTest {
     void testFetchConversation_WithEmptyResponse() throws IOException {
         // Override just the response body content
         when(responseBody.string()).thenReturn("{}");
-        
+
         ConversationDto fetchedConversation = conversationService.fetchConversation();
         assertNotNull(fetchedConversation);
         assertNull(fetchedConversation.getContactId());
@@ -132,7 +132,7 @@ public class ConversationApiEndPointConnTest {
     void testFetchConversation_WithPartialData() throws IOException {
         // Test with only some fields present
         when(responseBody.string()).thenReturn("{\"contactId\":\"string\",\"locationId\":\"string\"}");
-        
+
         ConversationDto fetchedConversation = conversationService.fetchConversation();
         assertNotNull(fetchedConversation);
         assertEquals("string", fetchedConversation.getContactId());
@@ -144,9 +144,8 @@ public class ConversationApiEndPointConnTest {
     void testFetchConversation_WithExtraFields() throws IOException {
         // Test with additional unknown fields in JSON
         when(responseBody.string()).thenReturn(
-            "{\"contactId\":\"string\",\"extraField\":\"value\",\"locationId\":\"string\"}"
-        );
-        
+                "{\"contactId\":\"string\",\"extraField\":\"value\",\"locationId\":\"string\"}");
+
         ConversationDto fetchedConversation = conversationService.fetchConversation();
         assertNotNull(fetchedConversation);
         assertEquals("string", fetchedConversation.getContactId());
@@ -160,7 +159,7 @@ public class ConversationApiEndPointConnTest {
         when(rateLimitResponse.isSuccessful()).thenReturn(false);
         when(rateLimitResponse.code()).thenReturn(429);
         when(call.execute()).thenReturn(rateLimitResponse);
-        
+
         assertThrows(IOException.class, () -> {
             conversationService.fetchConversation();
         });
