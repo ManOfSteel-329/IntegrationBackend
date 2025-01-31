@@ -17,7 +17,9 @@ public class User implements UserDetails {
     private String username;
     private String password;
     // private String userApiKey; //todo: this field is going store the user key to
-    // request all info from GoHighLevel API
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 
     public User(String username, String password) {
         this.username = username;
@@ -89,5 +91,13 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }
