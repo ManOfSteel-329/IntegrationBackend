@@ -16,6 +16,8 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users;
 
+    // private String CompanyApiKey; //todo: this field is going store the Company API key the users will use
+
     public Long getId() {
         return id;
     }

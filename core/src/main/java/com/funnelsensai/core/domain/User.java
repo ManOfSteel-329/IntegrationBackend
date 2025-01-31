@@ -16,7 +16,7 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String username;
     private String password;
-    // private String userApiKey; //todo: this field is going store the user key to
+
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
