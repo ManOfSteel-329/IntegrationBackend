@@ -21,9 +21,7 @@ public class ConversationService {
 
     private static final String API_URL = "https://stoplight.io/mocks/highlevel/integrations/39582856/conversations/tDtDnQdgm2LXpyiqYvZ6";
     //
-    @Value("${goHighLevel.mockToken}")
-    private String API_KEY; // hard coded now but in the future this will be take it from the user from the
-                            // security context
+    private static final String API_KEY = "123";
 
     private OkHttpClient client;
     private final ObjectMapper objectMapper = new ObjectMapper();

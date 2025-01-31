@@ -68,7 +68,16 @@ public class AuthController {
 
     @PostMapping("/createUser")
     public User createUser(@RequestBody AuthRequest authRequest) {
-        return userService.createUser(authRequest.getUsername(), authRequest.getPassword());
-
+        return userService.createUser(
+            authRequest.getUsername(),
+            authRequest.getPassword(),
+            "",  // firstName
+            "",  // lastName
+            authRequest.getUsername(), // using username as email
+            "",  // companyName
+            "FREE",  // default subscription plan
+            null,  // address
+            null   // stripeCustId
+        );
     }
 }
