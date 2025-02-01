@@ -27,6 +27,8 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String companyName;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private Address address;
     
     private String subscriptionStatus;

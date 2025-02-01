@@ -9,6 +9,11 @@ import com.funnelsensai.core.service.PaymentService;
 import com.funnelsensai.core.service.UserService;
 import com.funnelsensai.core.domain.Address;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Subscription;
+import com.funnelsensai.core.dto.subscription.CreateSubscriptionRequest;
+import com.funnelsensai.core.dto.subscription.SubscriptionResponse;
+import com.funnelsensai.core.dto.subscription.ErrorResponse;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,45 +39,28 @@ public class PaymentController {
     }
 
     @PostMapping("/create-subscription")
-    public ResponseEntity<CreatePaymentIntentResponse> createSubscription(
-            @RequestBody SubscriptionRequest request) {
+    public ResponseEntity<?> createSubscription(@RequestBody CreateSubscriptionRequest request) {
         try {
-            // Create Address object
-            Address address = new Address();
-            address.setLine1(request.getRegistration().getLine1());
-            address.setCity(request.getRegistration().getCity());
-            address.setState(request.getRegistration().getState());
-            address.setPostalCode(request.getRegistration().getPostalCode());
-            address.setCountry(request.getRegistration().getCountry());
-
-            // Create and save User
-            User user = new User();
-            user.setEmail(request.getRegistration().getEmail());
-            user.setFirstName(request.getRegistration().getFirstName());
-            user.setLastName(request.getRegistration().getLastName());
-            user.setCompanyName(request.getRegistration().getCompanyName());
-            user.setPassword(passwordEncoder.encode(request.getRegistration().getPassword()));
-            user.setAddress(address);
-            
-            // Save user to get ID and other generated fields
-            user = userService.save(user);
-
-            // Create subscription with Stripe
-            PaymentIntent paymentIntent = paymentService.createSubscription(
-                request.getPayment().getAmount(),
-                request.getPayment().getCurrency(),
-                user,
-                request.getPayment().getDescription(),
-                request.getPayment().getSelectedPlan()
-            );
-
-            // Return client secret for frontend processing
-            CreatePaymentIntentResponse response = new CreatePaymentIntentResponse();
-            response.setClientSecret(paymentIntent.getClientSecret());
-            
-            return ResponseEntity.ok(response);
+            Subscription subscription = paymentService.createSubscription(request);
+            return ResponseEntity.ok(new SubscriptionResponse(
+                subscription.getId(),
+                subscription.getStatus(),
+                subscription.getLatestInvoice()
+            ));
         } catch (StripeException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                .body(new ErrorResponse(e.getMessage()));
         }
+    }
+
+    @PostMapping("/create-payment-intent")
+    public CreatePaymentIntentResponse createPaymentIntent(@RequestBody CreatePaymentIntentRequest request) throws StripeException {
+        PaymentIntent paymentIntent = paymentService.createPaymentIntent(
+            request.getAmount(),
+            request.getCurrency(),
+            request.getDescription()
+        );
+        
+        return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
     }
 } 

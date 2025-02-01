@@ -3,12 +3,17 @@ package com.funnelsensai.core.service;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.PaymentMethod;
 import com.stripe.model.Subscription;
 import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.PaymentMethodAttachParams;
+import com.stripe.param.PaymentMethodCreateParams;
 import com.stripe.param.SubscriptionCreateParams;
 import org.springframework.stereotype.Service;
 import com.funnelsensai.core.domain.User;
+import com.funnelsensai.core.dto.subscription.CreateSubscriptionRequest;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -74,5 +79,40 @@ public class PaymentService {
             case "Pro" -> "price_pro_id_from_stripe";
             default -> throw new IllegalArgumentException("Invalid plan name");
         };
+    }
+
+    public Subscription createSubscription(CreateSubscriptionRequest request) throws StripeException {
+        // Create payment method if not exists
+        PaymentMethod paymentMethod = PaymentMethod.create(
+            PaymentMethodCreateParams.builder()
+                .setType(PaymentMethodCreateParams.Type.CARD)
+                .setCard(request.getPaymentMethod().getCard())
+                .build()
+        );
+
+        // Attach payment method to customer
+        paymentMethod.attach(
+            PaymentMethodAttachParams.builder()
+                .setCustomer(request.getCustomerId())
+                .build()
+        );
+
+        // Create the subscription
+        return Subscription.create(
+            SubscriptionCreateParams.builder()
+                .setCustomer(request.getCustomerId())
+                .addItem(
+                    SubscriptionCreateParams.Item.builder()
+                        .setPrice(request.getPriceId())
+                        .build()
+                )
+                .setPaymentBehavior(SubscriptionCreateParams.PaymentBehavior.DEFAULT_INCOMPLETE)
+                .setPaymentSettings(
+                    SubscriptionCreateParams.PaymentSettings.builder()
+                        .setPaymentMethodTypes(Arrays.asList("card"))
+                        .build()
+                )
+                .build()
+        );
     }
 } 
