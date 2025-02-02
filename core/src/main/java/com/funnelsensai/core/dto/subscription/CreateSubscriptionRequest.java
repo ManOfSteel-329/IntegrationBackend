@@ -6,21 +6,8 @@ import lombok.Data;
 @Data
 public class CreateSubscriptionRequest {
     @NotNull
-    private String priceId;  // Stripe Price ID
-    private String customerId;  // Optional - if customer exists
+    private String priceId;
+    private String customerId;
+    private String planName;
     private PaymentMethodDetails paymentMethod;
-}
-
-@Data
-class PaymentMethodDetails {
-    private String type = "card";
-    private CardDetails card;
-}
-
-@Data
-class CardDetails {
-    private String number;
-    private Integer expMonth;
-    private Integer expYear;
-    private String cvc;
 }

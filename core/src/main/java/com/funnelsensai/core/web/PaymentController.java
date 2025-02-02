@@ -38,21 +38,6 @@ public class PaymentController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/create-subscription")
-    public ResponseEntity<?> createSubscription(@RequestBody CreateSubscriptionRequest request) {
-        try {
-            Subscription subscription = paymentService.createSubscription(request);
-            return ResponseEntity.ok(new SubscriptionResponse(
-                subscription.getId(),
-                subscription.getStatus(),
-                subscription.getLatestInvoice()
-            ));
-        } catch (StripeException e) {
-            return ResponseEntity.badRequest()
-                .body(new ErrorResponse(e.getMessage()));
-        }
-    }
-
     @PostMapping("/create-payment-intent")
     public CreatePaymentIntentResponse createPaymentIntent(@RequestBody CreatePaymentIntentRequest request) throws StripeException {
         PaymentIntent paymentIntent = paymentService.createPaymentIntent(
