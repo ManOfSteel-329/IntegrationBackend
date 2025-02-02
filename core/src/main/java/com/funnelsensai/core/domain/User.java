@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "users")
@@ -13,13 +14,16 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String username;
+
     private String password;
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+
 
     public User(String username, String password) {
         this.username = username;
@@ -28,6 +32,7 @@ public class User implements UserDetails {
 
     public User() {
     }
+
 
     public Long getId() {
         return id;
@@ -100,4 +105,5 @@ public class User implements UserDetails {
     public void setCompany(Company company) {
         this.company = company;
     }
+
 }

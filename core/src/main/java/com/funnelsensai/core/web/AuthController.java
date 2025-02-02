@@ -1,9 +1,13 @@
 package com.funnelsensai.core.web;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.funnelsensai.core.dto.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -35,7 +39,7 @@ public class AuthController {
     private int refreshTokenExpiry;
 
     public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService,
-            BCryptPasswordEncoder bCryptPasswordEncoder) {
+                          BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userService = userService;
@@ -67,8 +71,12 @@ public class AuthController {
     }
 
     @PostMapping("/createUser")
-    public User createUser(@RequestBody AuthRequest authRequest) {
-        return userService.createUser(authRequest.getUsername(), authRequest.getPassword());
-
+    public ResponseEntity<?> createUser(@RequestBody AuthRequest authRequest) {
+        try {
+            UserResponseDTO userResponseDTO = userService.createUser(authRequest.getUsername(), authRequest.getPassword(), authRequest.getCompanyName());
+            return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Collections.singletonMap("error", e.getMessage()));
+        }
     }
 }

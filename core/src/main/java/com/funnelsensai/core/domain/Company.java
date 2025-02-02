@@ -1,6 +1,8 @@
 package com.funnelsensai.core.domain;
 
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,9 +16,15 @@ public class Company {
     private String name;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> users;
+    private List<User> users = new ArrayList<User>();
 
     // private String CompanyApiKey; //todo: this field is going store the Company API key the users will use
+
+    public Company() {}
+
+    public Company(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
