@@ -1,4 +1,4 @@
-package com.funnelsensai.core.dto;
+package com.funnelsensai.core.dto.ResponseDto;
 
 public class UserResponseDTO {
     private Long id;

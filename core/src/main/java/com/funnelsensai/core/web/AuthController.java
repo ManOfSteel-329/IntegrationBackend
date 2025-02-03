@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.funnelsensai.core.dto.UserResponseDTO;
+import com.funnelsensai.core.dto.ResponseDto.UserResponseDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.security.util.JwtUtil;
 import com.funnelsensai.core.service.UserService;
 import com.funnelsensai.core.util.CookieUtils;
