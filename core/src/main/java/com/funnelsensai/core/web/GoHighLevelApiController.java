@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.funnelsensai.core.dto.appointmentsForContact.AppointmentsForContactResponse;
+import com.funnelsensai.core.dto.calendarEventGetAppointment.CalendarEventGetAppointmentResponse;
 import com.funnelsensai.core.service.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,17 +23,20 @@ public class GoHighLevelApiController {
     private final SearchOpportunityService searchOpportunityService;
     private final CalendarEventService calendarEventService;
     private final GetAppointmentsForContactService getAppointmentsForContactService;
+    private final CalendarEventGetAppointmentService calendarEventGetAppointmentService;
+
     public SearchContactsService searchContactsService;
 
     public GoHighLevelApiController(OpportunityService opportunityService,
                                     SearchOpportunityService searchOpportunityService,
-                                    SearchContactsService searchContactsService, CalendarEventService calendarEventService, GetAppointmentsForContactService getAppointmentsForContactService) {
+                                    SearchContactsService searchContactsService, CalendarEventService calendarEventService, GetAppointmentsForContactService getAppointmentsForContactService, CalendarEventGetAppointmentService calendarEventGetAppointmentService) {
         super();
         this.opportunityService = opportunityService;
         this.searchOpportunityService = searchOpportunityService;
         this.searchContactsService = searchContactsService;
         this.calendarEventService = calendarEventService;
         this.getAppointmentsForContactService = getAppointmentsForContactService;
+        this.calendarEventGetAppointmentService = calendarEventGetAppointmentService;
     }
 
     @GetMapping("/highlevel/api/getopportunity")
@@ -86,5 +90,13 @@ public class GoHighLevelApiController {
     @GetMapping("/highlevel/api/getappointmentsforcontact/{id}")
     public AppointmentsForContactResponse getAppointmentsForContact(@PathVariable String id) throws IOException {
         return getAppointmentsForContactService.getAppointmentsForContactFromApi(id);
+    }
+
+    @GetMapping("/highlevel/api/getappointmentforcalendarevent/{id}")
+    public CalendarEventGetAppointmentResponse calendarEventGetAppointment(@PathVariable String id) throws IOException {
+        if (id == null) {
+            throw new IllegalArgumentException("Appointment ID cannot be null");
+        }
+        return calendarEventGetAppointmentService.calendarEventGetAppointmentFromApi(id);
     }
 }
