@@ -1,11 +1,9 @@
 package com.funnelsensai.core.web;
 
+import com.funnelsensai.core.dto.appointmentsForContact.AppointmentsForContactResponse;
 import com.funnelsensai.core.dto.opportunities.GetOpportunityResponse;
 import com.funnelsensai.core.dto.opportunities.GetSearchOpportunityResponse;
-import com.funnelsensai.core.service.CalendarEventService;
-import com.funnelsensai.core.service.OpportunityService;
-import com.funnelsensai.core.service.SearchContactsService;
-import com.funnelsensai.core.service.SearchOpportunityService;
+import com.funnelsensai.core.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +32,9 @@ class GoHighLevelApiControllerTest {
     @Mock
     private CalendarEventService calendarEventService;
 
+    @Mock
+    private GetAppointmentsForContactService getAppointmentsForContactService;
+
     private GoHighLevelApiController controller;
 
     @BeforeEach
@@ -41,7 +43,8 @@ class GoHighLevelApiControllerTest {
                 opportunityService,
                 searchOpportunityService,
                 searchContactsService,
-                calendarEventService);
+                calendarEventService,
+                getAppointmentsForContactService);
     }
 
     @Test
@@ -70,5 +73,26 @@ class GoHighLevelApiControllerTest {
         // Assert
         assertThat(actualResponse).isEqualTo(expectedResponse);
         verify(searchOpportunityService).getSearchOpportunityFromApi();
+    }
+
+    @Test
+    void getAppointmentsForContact_WithValidId_ShouldReturnAppointmentResponse() throws IOException {
+
+        String id = "sx6wyHhbFdRXh302LLNR";
+        AppointmentsForContactResponse expectedResponse = new AppointmentsForContactResponse();
+        when(getAppointmentsForContactService.getAppointmentsForContactFromApi(id))
+                .thenReturn(expectedResponse);
+
+        AppointmentsForContactResponse actualResponse = controller.getAppointmentsForContact(id);
+
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+        verify(getAppointmentsForContactService).getAppointmentsForContactFromApi(id);
+    }
+
+    @Test
+    void getAppointmentsForContact_WithNullId_ShouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                controller.getAppointmentsForContact(null)
+        );
     }
 }
