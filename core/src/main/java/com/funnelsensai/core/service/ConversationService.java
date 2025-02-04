@@ -1,7 +1,6 @@
 package com.funnelsensai.core.service;
 
 import com.funnelsensai.core.dto.conversations.ConversationDto;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;

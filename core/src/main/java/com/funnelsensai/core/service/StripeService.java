@@ -12,28 +12,30 @@ import com.stripe.param.*;
 import com.stripe.model.Price;
 import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentMethodAttachParams;
+import com.stripe.Stripe;
+import jakarta.annotation.PostConstruct;
 
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 @Service
-public class PaymentService {
+public class StripeService {
+    @Value("${stripe.secret.key}")
+    private String stripeSecretKey; //ADD VALIDATION CHECK
+
     private final UserService userService;
 
-    public PaymentService(UserService userService) {
+    public StripeService(UserService userService) {
         this.userService = userService;
     }
 
-    /* // Create a payment method
-    public PaymentMethod createPaymentMethod(String paymentToken) throws StripeException {
-        PaymentMethodCreateParams params = PaymentMethodCreateParams.builder()
-            .setType(PaymentMethodCreateParams.Type.CARD)
-            .setCard(PaymentMethodCreateParams.Card.builder()
-                .setToken(paymentToken)
-                .build())
-            .build();
-
-        return PaymentMethod.create(params);
-    } */
+    @PostConstruct
+    private void initializeStripe() {
+        if (stripeSecretKey == null || stripeSecretKey.isEmpty()) {
+            throw new IllegalStateException("Stripe secret key is not configured properly.");
+        }
+        Stripe.apiKey = stripeSecretKey;
+    }
 
     // Create a new subscription and ensure payment method is attached
     public Subscription createSubscription(String customerId, String priceId, String paymentMethodId, String planName) throws StripeException {
@@ -90,24 +92,13 @@ public class PaymentService {
     }
 
     // Get Stripe price ID for a given plan name
-    private String getPriceIdForPlan(String planName) {
+    public String getPriceIdForPlan(String planName) {
         return switch (planName) {
-            case "FunnelSensai Pro" -> "price_1QngiQDVAigQtw1EOTyUC8TX";
-            case "FunnelSensai Basic" -> "price_1QnghUDVAigQtw1EXLFzR2Ob";
+            case "Pro" -> "price_1QngiQDVAigQtw1EOTyUC8TX";
+            case "Basic" -> "price_1QnghUDVAigQtw1EXLFzR2Ob";
             default -> throw new IllegalArgumentException("Invalid plan name");
         };
     }
-
-    /* public PaymentMethod createPaymentMethodFromToken(String token) throws StripeException {
-        PaymentMethodCreateParams params = PaymentMethodCreateParams.builder()
-            .setType(PaymentMethodCreateParams.Type.CARD)
-            .setCard(PaymentMethodCreateParams.Card.builder()
-                .setToken(token)
-                .build())
-            .build();
-
-        return PaymentMethod.create(params);
-    } */
 
     public PaymentIntent retrievePaymentIntent(String paymentIntentId) throws StripeException {
         return PaymentIntent.retrieve(paymentIntentId);

@@ -1,6 +1,5 @@
 package com.funnelsensai.core;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.funnelsensai.core.dto.users.UserDTO;
 import com.funnelsensai.core.service.GetUserService;

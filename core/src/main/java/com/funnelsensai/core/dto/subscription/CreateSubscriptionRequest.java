@@ -14,4 +14,5 @@ public class CreateSubscriptionRequest {
     private Long amount;
     private String paymentIntentId;
     private String email;
+    private String paymentMethodId;
 }
