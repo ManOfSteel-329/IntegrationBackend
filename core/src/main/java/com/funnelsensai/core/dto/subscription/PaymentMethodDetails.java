@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class PaymentMethodDetails {
     private String type = "card";
-    private String paymentToken;
+    // private String paymentToken;
     private CardDetails card;
 }

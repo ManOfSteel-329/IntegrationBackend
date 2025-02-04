@@ -12,5 +12,5 @@ public class SubscriptionRequest {
     
     @NotNull
     @Valid
-    private CreatePaymentIntentRequest payment;
+    private CreatePaymentMethodRequest payment;
 }

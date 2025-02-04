@@ -33,6 +33,7 @@ class PaymentControllerTest {
     @MockBean
     private UserRepository userRepository;
 
+    /*
     @Test
     @WithMockUser
     void shouldCreatePaymentIntent() throws Exception {
@@ -53,5 +54,5 @@ class PaymentControllerTest {
                     }"""))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.clientSecret").value("test_secret"));
-    }
+    } */
 }

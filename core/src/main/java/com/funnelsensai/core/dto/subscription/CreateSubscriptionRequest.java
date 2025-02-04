@@ -10,4 +10,8 @@ public class CreateSubscriptionRequest {
     private String customerId;
     private String planName;
     private PaymentMethodDetails paymentMethod;
+    private Long userId;
+    private Long amount;
+    private String paymentIntentId;
+    private String email;
 }

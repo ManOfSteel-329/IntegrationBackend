@@ -1,7 +1,7 @@
 package com.funnelsensai.core.web;
 
 import com.funnelsensai.core.domain.User;
-import com.funnelsensai.core.dto.payment.CreatePaymentIntentRequest;
+import com.funnelsensai.core.dto.payment.CreatePaymentMethodRequest;
 import com.funnelsensai.core.dto.payment.UserRegistrationRequest;
 import com.funnelsensai.core.dto.payment.SubscriptionRequest;
 import com.funnelsensai.core.dto.payment.CreatePaymentIntentResponse;
@@ -38,7 +38,7 @@ public class PaymentController {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostMapping("/create-payment-intent")
+    /* @PostMapping("/create-payment-intent")
     public CreatePaymentIntentResponse createPaymentIntent(@RequestBody CreatePaymentIntentRequest request) throws StripeException {
         PaymentIntent paymentIntent = paymentService.createPaymentIntent(
             request.getAmount(),
@@ -47,5 +47,5 @@ public class PaymentController {
         );
         
         return new CreatePaymentIntentResponse(paymentIntent.getClientSecret());
-    }
+    } */
 } 

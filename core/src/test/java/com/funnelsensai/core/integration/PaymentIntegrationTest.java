@@ -93,7 +93,7 @@ public class PaymentIntegrationTest {
     void shouldDenyAccessWithoutAuthentication() {
         // Act
         ResponseEntity<String> response = restTemplate.getForEntity(
-            "http://localhost:" + port + "/auth/subscription/details",
+            "http://localhost:" + port + "/auth/subscription/create",
             String.class
         );
 
