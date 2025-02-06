@@ -6,13 +6,19 @@ import lombok.Data;
 @Data
 public class CreateSubscriptionRequest {
     @NotNull
-    private String priceId;
     private String customerId;
+    @NotNull
     private String planName;
-    private PaymentMethodDetails paymentMethod;
-    private Long userId;
-    private Long amount;
-    private String paymentIntentId;
-    private String email;
+    @NotNull
     private String paymentMethodId;
+    @NotNull
+    private String companyName;
+    @NotNull
+    private String email;
+    @NotNull
+    private String password;
+    @NotNull
+    private String firstName;
+    @NotNull
+    private String lastName;
 }

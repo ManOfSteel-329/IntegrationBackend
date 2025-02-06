@@ -1,6 +1,8 @@
 package com.funnelsensai.core.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import lombok.*;
@@ -16,37 +18,37 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-
     @Column(unique = true)
-    private String username;
-    private String password;
+    @NotNull    
     private String email;
-    // private String userApiKey; //todo: this field is going store the user key to
-    // request all info from GoHighLevel API
-
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
-    private String companyName;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
-    private Address address;
-    
-    private String subscriptionStatus;
-    private String stripeCustId;
+    @NotNull
+    private String password; //ENCRYPTED PASSWORD
+    @NotNull
+    private Company company;
+    @NotNull
+    private boolean isAccountNonExpired;
+    @NotNull
+    private boolean isOwner;
+    private RoleEntity role;
 
-    public User(String username, String password, String firstName, String lastName, 
-                String email, String companyName, String subscriptionPlan, 
-                Address address, String stripeCustId) {
-        this.username = username;
+    public User(String email, String password, String firstName, String lastName, Company company, boolean isAccountNonExpired, boolean isOwner, RoleEntity role) {
+        this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.email = email;
-        this.companyName = companyName;
-        this.subscriptionStatus = subscriptionPlan;
-        this.address = address;
-        this.stripeCustId = stripeCustId;
+        this.company = company;
+        this.isAccountNonExpired = isAccountNonExpired;
+        this.isOwner = isOwner;
+        this.role = role;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 
     @Override
@@ -88,4 +90,5 @@ public class User implements UserDetails {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

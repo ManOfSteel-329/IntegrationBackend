@@ -74,10 +74,6 @@ public class AuthController {
             "",  // firstName
             "",  // lastName
             authRequest.getUsername(), // using username as email
-            "",  // companyName
-            "FREE",  // default subscription plan
-            null,  // address
-            null   // stripeCustId
         );
     }
 }
