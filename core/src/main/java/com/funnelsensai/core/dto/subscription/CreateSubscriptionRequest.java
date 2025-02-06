@@ -8,9 +8,9 @@ public class CreateSubscriptionRequest {
     @NotNull
     private String customerId;
     @NotNull
-    private String planName;
-    @NotNull
     private String paymentMethodId;
+    @NotNull
+    private String planName;
     @NotNull
     private String companyName;
     @NotNull

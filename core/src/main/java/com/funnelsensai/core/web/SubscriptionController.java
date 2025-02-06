@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Subscription;
 import com.funnelsensai.core.dto.subscription.*;
+import com.funnelsensai.core.service.CompanyService;
 import com.funnelsensai.core.service.UserService;
 import com.funnelsensai.core.service.Stripe.StripeService;
 import com.stripe.model.Customer;
@@ -15,6 +16,7 @@ import java.util.Map;
 import com.stripe.model.SetupIntent;
 import com.funnelsensai.core.domain.Company;
 import com.funnelsensai.core.domain.User;
+import com.funnelsensai.core.domain.Role;
 
 @RestController
 @RequestMapping("/auth/signup")
@@ -22,10 +24,12 @@ public class SubscriptionController {
 
     private final StripeService stripeService;
     private final UserService userService;
+    private final CompanyService companyService;
 
-    public SubscriptionController(StripeService stripeService, UserService userService) {
+    public SubscriptionController(StripeService stripeService, UserService userService, CompanyService companyService) {
         this.stripeService = stripeService;
         this.userService = userService;
+        this.companyService = companyService;
     }
 
     @PostMapping("/create-customer-and-setup-intent")
@@ -51,20 +55,18 @@ public class SubscriptionController {
     @PostMapping("/attach-payment-method-and-create-subscription")
     public ResponseEntity<?> attachPaymentMethodAndCreateSubscription(@RequestBody CreateSubscriptionRequest request) {
         try {
-            stripeService.attachAndSetDefaultPaymentForCustomer(request.getCustomerId(), request.getPaymentMethodId());
+            stripeService.attachPaymentMethodToCustomer(request.getCustomerId(), request.getPaymentMethodId());
             stripeService.setDefaultPaymentMethodForCustomer(request.getCustomerId(), request.getPaymentMethodId());
 
             Subscription subscription = stripeService.createSubscription(request.getCustomerId(), request.getPlanName());
 
-            Company company = new Company(request.getCompanyName(), request.getCustomerId(), subscription.getId());
-            userService.saveCompany(company);
+            Company company = companyService.createCompany(request.getCompanyName(), request.getCustomerId(), subscription.getId());
+            System.out.println("Company saved: " + company);
 
-            User user = userService.createUser(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName(), company);
-                userService.saveUser(user);
+            User user = userService.createUser(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName(), company, Role.ADMIN);
+            System.out.println("User saved: " + user);
 
             return ResponseEntity.ok(Map.of("subscriptionId", subscription.getId(), "company", company));
-
-
 
         } catch (StripeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", "Error attaching payment method and creating subscription: " + e.getMessage()));

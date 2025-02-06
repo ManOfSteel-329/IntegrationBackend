@@ -26,16 +26,19 @@ public class User implements UserDetails {
     @NotNull
     private String lastName;
     @NotNull
-    private String password; //ENCRYPTED PASSWORD
-    @NotNull
+    private String password;
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
     @NotNull
     private boolean isAccountNonExpired;
     @NotNull
     private boolean isOwner;
-    private RoleEntity role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
 
-    public User(String email, String password, String firstName, String lastName, Company company, boolean isAccountNonExpired, boolean isOwner, RoleEntity role) {
+    public User(String email, String password, String firstName, String lastName, Company company, boolean isAccountNonExpired, boolean isOwner, Role role) {
         this.email = email;
         this.password = password;
         this.firstName = firstName;

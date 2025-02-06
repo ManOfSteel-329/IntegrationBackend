@@ -5,4 +5,5 @@ import com.funnelsensai.core.domain.Company;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
     
+    public Company findByName(String name);
 }

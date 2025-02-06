@@ -1,35 +1,29 @@
 package com.funnelsensai.core.service.Stripe;
 
-import com.funnelsensai.core.domain.User;
-import com.funnelsensai.core.dto.subscription.CreateSubscriptionRequest;
 import com.funnelsensai.core.service.UserService;
-import com.stripe.param.PaymentMethodCreateParams;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
-import com.stripe.model.PaymentIntent;
 import com.stripe.model.PaymentMethod;
 import com.stripe.model.Subscription;
 import com.stripe.param.*;
-import com.stripe.model.Price;
-import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;
-import com.stripe.model.SetupIntent;
 
+import com.stripe.model.SetupIntent;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 @Service
 public class StripeService {
+
     @Value("${stripe.secret.key}")
-    private String stripeSecretKey; //ADD VALIDATION CHECK
+    private String stripeSecretKey;
 
-    private final UserService userService;
-
-    public StripeService(UserService userService) {
-        this.userService = userService;
-    }
+    public static final String PLAN_PRO = "Pro";
+    public static final String PLAN_BASIC = "Basic";
+    public static final String PRICE_ID_PRO = "price_1QngiQDVAigQtw1EOTyUC8TX";
+    public static final String PRICE_ID_BASIC = "price_1QnghUDVAigQtw1EXLFzR2Ob";
 
     @PostConstruct
     private void initializeStripe() {
@@ -39,7 +33,6 @@ public class StripeService {
         Stripe.apiKey = stripeSecretKey;
     }
 
-    // Create a new subscription and ensure payment method is attached
     public Subscription createSubscription(String customerId, String planName) throws StripeException {
         SubscriptionCreateParams params = SubscriptionCreateParams.builder()
                 .setCustomer(customerId)
@@ -54,13 +47,13 @@ public class StripeService {
 
     private String getPriceIdForPlan(String planName) {
         return switch (planName) {
-            case "Pro" -> "price_1QngiQDVAigQtw1EOTyUC8TX";
-            case "Basic" -> "price_1QnghUDVAigQtw1EXLFzR2Ob";
+            case PLAN_PRO -> PRICE_ID_PRO;
+            case PLAN_BASIC -> PRICE_ID_BASIC;
             default -> throw new IllegalArgumentException("Invalid plan name");
         };
     }
 
-    public void attachAndSetDefaultPaymentForCustomer(String customerId, String paymentMethodId) throws StripeException {
+    public void attachPaymentMethodToCustomer(String customerId, String paymentMethodId) throws StripeException {
         PaymentMethod paymentMethod = PaymentMethod.retrieve(paymentMethodId);
         PaymentMethodAttachParams attachParams = PaymentMethodAttachParams.builder()
             .setCustomer(customerId)
@@ -78,7 +71,6 @@ public class StripeService {
         customer.update(updateParams);
     }
 
-    //todo: change to first + last name
     public Customer createCustomer(String email, String name) throws StripeException {
         CustomerCreateParams params = CustomerCreateParams.builder()
             .setEmail(email)

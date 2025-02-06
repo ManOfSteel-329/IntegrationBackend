@@ -27,18 +27,16 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private final UserService userService;
 
     @Value("${jwt.access.token.expiry}")
     private int accessTokenExpiry;
     @Value("${jwt.refresh.token.expiry}")
     private int refreshTokenExpiry;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil, UserService userService,
+    public AuthController(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
             BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
-        this.userService = userService;
     }
 
     @PostMapping("/login")
@@ -64,16 +62,5 @@ public class AuthController {
         } catch (AuthenticationException ex) {
             throw new RuntimeException("Invalid username or password");
         }
-    }
-
-    @PostMapping("/createUser")
-    public User createUser(@RequestBody AuthRequest authRequest) {
-        return userService.createUser(
-            authRequest.getUsername(),
-            authRequest.getPassword(),
-            "",  // firstName
-            "",  // lastName
-            authRequest.getUsername(), // using username as email
-        );
     }
 }
