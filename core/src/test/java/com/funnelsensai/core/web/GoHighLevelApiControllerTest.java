@@ -1,6 +1,7 @@
 package com.funnelsensai.core.web;
 
 import com.funnelsensai.core.dto.appointmentsForContact.AppointmentsForContactResponse;
+import com.funnelsensai.core.dto.calendarEventGetAppointment.CalendarEventGetAppointmentResponse;
 import com.funnelsensai.core.dto.opportunities.GetOpportunityResponse;
 import com.funnelsensai.core.dto.opportunities.GetSearchOpportunityResponse;
 import com.funnelsensai.core.service.*;
@@ -35,6 +36,9 @@ class GoHighLevelApiControllerTest {
     @Mock
     private GetAppointmentsForContactService getAppointmentsForContactService;
 
+    @Mock
+    private CalendarEventGetAppointmentService calendarEventGetAppointmentService;
+
     private GoHighLevelApiController controller;
 
     @BeforeEach
@@ -44,7 +48,8 @@ class GoHighLevelApiControllerTest {
                 searchOpportunityService,
                 searchContactsService,
                 calendarEventService,
-                getAppointmentsForContactService);
+                getAppointmentsForContactService,
+                calendarEventGetAppointmentService);
     }
 
     @Test
@@ -93,6 +98,27 @@ class GoHighLevelApiControllerTest {
     void getAppointmentsForContact_WithNullId_ShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () ->
                 controller.getAppointmentsForContact(null)
+        );
+    }
+
+    @Test
+    void calendarEventGetAppointment_WithValidId_ShouldReturnAppointmentResponse() throws IOException {
+
+        String id = "sx6wyHhbFdRXh302LLNR";
+        CalendarEventGetAppointmentResponse expectedResponse = new CalendarEventGetAppointmentResponse();
+        when(calendarEventGetAppointmentService.calendarEventGetAppointmentFromApi(id))
+                .thenReturn(expectedResponse);
+
+        CalendarEventGetAppointmentResponse actualResponse = controller.calendarEventGetAppointment(id);
+
+        assertThat(actualResponse).isEqualTo(expectedResponse);
+        verify(calendarEventGetAppointmentService).calendarEventGetAppointmentFromApi(id);
+    }
+
+    @Test
+    void calendarEventGetAppointment_WithNullId_ShouldThrowIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                controller.calendarEventGetAppointment(null)
         );
     }
 }
