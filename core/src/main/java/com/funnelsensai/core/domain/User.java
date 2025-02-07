@@ -18,8 +18,8 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     @NotNull    
+    @Column(unique = true)
     private String email;
     @NotNull
     private String firstName;

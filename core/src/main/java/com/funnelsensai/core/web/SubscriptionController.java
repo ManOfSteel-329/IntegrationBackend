@@ -39,6 +39,11 @@ public class SubscriptionController {
                 return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
             }
 
+            // Check if the email already exists
+            if (userService.emailExists(request.getEmail())) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Email already exists"));
+            }
+
             Customer customer = stripeService.createCustomer(request.getEmail(), request.getName());
             SetupIntent setupIntent = stripeService.createSetupIntent();
 
@@ -61,10 +66,8 @@ public class SubscriptionController {
             Subscription subscription = stripeService.createSubscription(request.getCustomerId(), request.getPlanName());
 
             Company company = companyService.createCompany(request.getCompanyName(), request.getCustomerId(), subscription.getId());
-            System.out.println("Company saved: " + company);
 
-            User user = userService.createUser(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName(), company, Role.ADMIN);
-            System.out.println("User saved: " + user);
+            userService.createUser(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName(), company, Role.ADMIN);
 
             return ResponseEntity.ok(Map.of("subscriptionId", subscription.getId(), "company", company));
 

@@ -10,12 +10,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private UserRepository userRepository;
-
+    private final UserRepository userRepository;
 
     public UserService(BCryptPasswordEncoder bCryptPasswordEncoder, UserRepository userRepository) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.userRepository = userRepository;
+    }
+
+    public boolean emailExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
     }
 
     public User createUser(String email, String password, String firstName, String lastName, Company company, Role role) {

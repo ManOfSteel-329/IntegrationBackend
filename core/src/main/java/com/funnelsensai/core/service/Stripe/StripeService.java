@@ -1,6 +1,5 @@
 package com.funnelsensai.core.service.Stripe;
 
-import com.funnelsensai.core.service.UserService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.PaymentMethod;
@@ -20,10 +19,14 @@ public class StripeService {
     @Value("${stripe.secret.key}")
     private String stripeSecretKey;
 
+    @Value("${stripe.price.id.pro}")
+    private String priceIdPro;
+
+    @Value("${stripe.price.id.basic}")
+    private String priceIdBasic;
+
     public static final String PLAN_PRO = "Pro";
     public static final String PLAN_BASIC = "Basic";
-    public static final String PRICE_ID_PRO = "price_1QngiQDVAigQtw1EOTyUC8TX";
-    public static final String PRICE_ID_BASIC = "price_1QnghUDVAigQtw1EXLFzR2Ob";
 
     @PostConstruct
     private void initializeStripe() {
@@ -47,8 +50,8 @@ public class StripeService {
 
     private String getPriceIdForPlan(String planName) {
         return switch (planName) {
-            case PLAN_PRO -> PRICE_ID_PRO;
-            case PLAN_BASIC -> PRICE_ID_BASIC;
+            case PLAN_PRO -> priceIdPro;
+            case PLAN_BASIC -> priceIdBasic;
             default -> throw new IllegalArgumentException("Invalid plan name");
         };
     }
