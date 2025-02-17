@@ -1,4 +1,4 @@
-package com.funnelsensai.core.web.request;
+package com.funnelsensai.core.web;
 
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListPagesDto;
 import com.funnelsensai.core.dto.funnels.listOfFunnels.FunnelListResponseDto.FunnelResponseDto;

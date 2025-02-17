@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "companies")
 public class Company {
 
     @Id
@@ -16,10 +15,14 @@ public class Company {
     @Column(unique = true)
     private String name;
 
+    private String stripeCustomerId;
+
+    private String stripeSubscriptionId;
+
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users = new ArrayList<User>();
 
-    // private String CompanyApiKey; //todo: this field is going store the Company API key the users will use
+    private String ghlUrl;
 
     public Company() {}
 
@@ -49,5 +52,29 @@ public class Company {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public String getStripeCustomerId() {
+        return stripeCustomerId;
+    }
+
+    public void setStripeCustomerId(String stripeCustomerId) {
+        this.stripeCustomerId = stripeCustomerId;
+    }
+
+    public String getStripeSubscriptionId() {
+        return stripeSubscriptionId;
+    }
+
+    public void setStripeSubscriptionId(String stripeSubscriptionId) {
+        this.stripeSubscriptionId = stripeSubscriptionId;
+    }
+
+    public String getGhlUrl() {
+        return ghlUrl;
+    }
+
+    public void setGhlUrl(String ghlUrl) {
+        this.ghlUrl = ghlUrl;
     }
 }

@@ -13,12 +13,29 @@ import java.util.Optional;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String username;
 
     private String password;
+
+    private String email;
+
+    private String firstName;
+
+    private String lastName;
+
+    private Boolean isStripeAccountNonExpired;
+
+    private Boolean isStripeAccountNonLocked;
+
+    private Boolean isUserOwner;
+
+
+
+
 
     @ManyToOne
     @JoinColumn(name = "company_id", nullable = false)
@@ -106,4 +123,51 @@ public class User implements UserDetails {
         this.company = company;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Boolean getStripeAccountNonExpired() {
+        return isStripeAccountNonExpired;
+    }
+
+    public void setStripeAccountNonExpired(Boolean stripeAccountNonExpired) {
+        isStripeAccountNonExpired = stripeAccountNonExpired;
+    }
+
+    public Boolean getStripeAccountNonLocked() {
+        return isStripeAccountNonLocked;
+    }
+
+    public void setStripeAccountNonLocked(Boolean stripeAccountNonLocked) {
+        isStripeAccountNonLocked = stripeAccountNonLocked;
+    }
+
+    public Boolean getUserOwner() {
+        return isUserOwner;
+    }
+
+    public void setUserOwner(Boolean userOwner) {
+        isUserOwner = userOwner;
+    }
 }
