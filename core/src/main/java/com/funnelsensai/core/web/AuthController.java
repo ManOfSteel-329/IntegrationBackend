@@ -63,4 +63,24 @@ public class AuthController {
             throw new RuntimeException("Invalid username or password");
         }
     }
+
+    @PostMapping("/createUser")
+    public Map<String, String> createUser(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
+        User user = userService.createUser(authRequest.getUsername(), authRequest.getPassword());
+
+        // Generate tokens
+        String accessToken = jwtUtil.generateAccessToken(user.getUsername());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getUsername());
+
+        // Set tokens in cookies
+        CookieUtils.setCookie(response, "accessToken", accessToken, accessTokenExpiry);
+        CookieUtils.setCookie(response, "refreshToken", refreshToken, refreshTokenExpiry);
+
+        // Return tokens in response
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        return tokens;
+    }
 }
