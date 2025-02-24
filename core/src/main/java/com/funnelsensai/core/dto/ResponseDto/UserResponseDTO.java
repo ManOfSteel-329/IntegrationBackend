@@ -2,12 +2,12 @@ package com.funnelsensai.core.dto.ResponseDto;
 
 public class UserResponseDTO {
     private Long id;
-    private String username;
+    private String email;
     private String companyName;
 
     public UserResponseDTO(Long id, String username, String companyName) {
         this.id = id;
-        this.username = username;
+        this.email = username;
         this.companyName = companyName;
     }
 
@@ -19,12 +19,12 @@ public class UserResponseDTO {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getCompanyName() {

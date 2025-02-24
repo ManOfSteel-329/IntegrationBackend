@@ -1,17 +1,19 @@
 package com.funnelsensai.core.web.request;
 
 public class AuthRequest {
-    private String username;
+    private String email;
     private String password;
     private String companyName;// Added here cause when user is created it needs to belong to a company
 
     // Getters and Setters
-    public String getUsername() {
-        return username;
+
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

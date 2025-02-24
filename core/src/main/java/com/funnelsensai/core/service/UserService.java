@@ -18,27 +18,19 @@ public class UserService {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.companyService = companyService;
-
     }
 
-    //Method modified from the original to include company when creating a user and return Dto. todo: delete comment
-    public UserResponseDTO createUser(String username, String password, String companyName) {
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new RuntimeException("Username '" + username + "' is already taken.");
+    public UserResponseDTO createUser(String email, String password, String companyName) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new RuntimeException("email '" + email + "' is already taken.");
         }
-
         String encryptedPassword = bCryptPasswordEncoder.encode(password);
-
-        // Extract the Company object from Optional or throw an exception if not found
         Company company = companyService.findCompanyByName(companyName)
                 .orElseThrow(() -> new RuntimeException("Company '" + companyName + "' does not exist."));
-
-        // Creating and saving the user entity
-        User user = new User(username, encryptedPassword);
+        // Using the updated constructor which sets both username and email.
+        User user = new User(email, encryptedPassword);
         user.setCompany(company);
         User savedUser = userRepository.save(user);
-
-        // Convert entity to DTO before returning
-        return new UserResponseDTO(savedUser.getId(), savedUser.getUsername(), savedUser.getCompany().getName());
+        return new UserResponseDTO(savedUser.getId(), savedUser.getEmail(), savedUser.getCompany().getName());
     }
 }

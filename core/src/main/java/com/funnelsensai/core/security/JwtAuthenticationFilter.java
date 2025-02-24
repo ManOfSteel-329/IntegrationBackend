@@ -11,7 +11,6 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.lang.NonNull;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
+
     @Value("${jwt.access.token.expiry}")
     private int accessTokenExpiry;
 
@@ -37,32 +37,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain)
             throws ServletException, IOException {
+
         String accessToken = CookieUtils.getTokenFromCookie(request, "accessToken");
         String refreshToken = CookieUtils.getTokenFromCookie(request, "refreshToken");
 
         if (accessToken != null) {
             if (jwtUtil.isTokenExpired(accessToken) && refreshToken != null && jwtUtil.validateToken(refreshToken)) {
-                // Access token is expired but refresh token is valid; generate new access token
-                String username = jwtUtil.getUsernameFromToken(refreshToken);
-                String newAccessToken = jwtUtil.generateAccessToken(username);
+                // Access token expired but refresh token is valid; generate new access token.
+                String email = jwtUtil.getUsernameFromToken(refreshToken); // email is stored in token.
+                String newAccessToken = jwtUtil.generateAccessToken(email);
                 CookieUtils.setCookie(response, "accessToken", newAccessToken, accessTokenExpiry);
-
-                accessToken = newAccessToken; // Update to use the new token
+                accessToken = newAccessToken; // Update to use the new token.
             }
 
             if (jwtUtil.validateToken(accessToken)) {
-                String username = jwtUtil.getUsernameFromToken(accessToken);
-                User user = (User) userDetailsService.loadUserByUsername(username); // Note: THIS IS INEFFICIENT!!! At
-                                                                                    // some point we should consider
-                                                                                    // using caching
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        user, null, null);
+                // The token holds the email as the identifier.
+                String email = jwtUtil.getUsernameFromToken(accessToken);
+                User user = (User) userDetailsService.loadUserByUsername(email);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(user, null, null);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication); // This is the code that actually
-                                                                                      // "logs the user in"
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
         filterChain.doFilter(request, response);
     }
-
 }
