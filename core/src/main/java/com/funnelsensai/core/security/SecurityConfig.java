@@ -76,7 +76,8 @@ public class SecurityConfig {
         corsConfiguration.setAllowedOrigins(List.of(
                 "https://funnelsensai.com", // front-end URL (eg back-end URL: https://api.funnelsensai.com)
                 "https://dev.funnelsensai.com",
-                "http://localhost:5173"));
+                "http://localhost:5173",
+                "http://localhost:5174"));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
                 ACCESS_CONTROL_ALLOW_ORIGIN,
