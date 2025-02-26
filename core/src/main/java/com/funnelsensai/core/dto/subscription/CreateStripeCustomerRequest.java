@@ -9,4 +9,6 @@ public class CreateStripeCustomerRequest {
     private String email;
     @NotNull
     private String name;
+    @NotNull
+    private String paymentMethodType;
 } 

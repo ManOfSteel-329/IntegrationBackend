@@ -77,7 +77,8 @@ public class SecurityConfig {
                 "https://funnelsensai.com", // front-end URL (eg back-end URL: https://api.funnelsensai.com)
                 "https://dev.funnelsensai.com",
                 "http://localhost:5173",
-                "http://localhost:5174"));
+                "https://3ca1-47-37-127-19.ngrok-free.app" // ngrok URL
+        ));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
                 ACCESS_CONTROL_ALLOW_ORIGIN,

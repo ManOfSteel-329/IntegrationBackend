@@ -15,7 +15,6 @@ import com.stripe.model.Customer;
 import java.util.Map;
 import com.stripe.model.SetupIntent;
 import com.funnelsensai.core.domain.Company;
-import com.funnelsensai.core.domain.User;
 import com.funnelsensai.core.domain.Role;
 
 @RestController
@@ -35,6 +34,7 @@ public class SubscriptionController {
     @PostMapping("/create-customer-and-setup-intent")
     public ResponseEntity<?> createCustomerAndSetupIntent(@RequestBody CreateStripeCustomerRequest request) {
         try {
+
             if (request.getEmail() == null || request.getName() == null) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
             }
@@ -45,7 +45,7 @@ public class SubscriptionController {
             }
 
             Customer customer = stripeService.createCustomer(request.getEmail(), request.getName());
-            SetupIntent setupIntent = stripeService.createSetupIntent();
+            SetupIntent setupIntent = stripeService.createSetupIntent(request.getPaymentMethodType());
 
             return ResponseEntity.ok(Map.of(
                 "clientSecret", setupIntent.getClientSecret(),

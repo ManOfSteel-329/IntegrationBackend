@@ -21,4 +21,19 @@ public class CreateSubscriptionRequest {
     private String firstName;
     @NotNull
     private String lastName;
+
+    @Override
+    public String toString() {
+        return "CreateSubscriptionRequest{" +
+                "customerId='" + customerId + '\'' +
+                ", paymentMethodId='" + paymentMethodId + '\'' +
+                ", planName='" + planName + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
+    }
+
 }

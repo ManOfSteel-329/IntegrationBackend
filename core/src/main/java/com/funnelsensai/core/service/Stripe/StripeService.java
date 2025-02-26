@@ -83,9 +83,9 @@ public class StripeService {
         return Customer.create(params);
     }
 
-    public SetupIntent createSetupIntent() throws StripeException {
+    public SetupIntent createSetupIntent(String paymentMethodType) throws StripeException {
         SetupIntentCreateParams params = SetupIntentCreateParams.builder()
-            .addPaymentMethodType("card")
+            .addPaymentMethodType(paymentMethodType)
             .build();
         return SetupIntent.create(params);
     }

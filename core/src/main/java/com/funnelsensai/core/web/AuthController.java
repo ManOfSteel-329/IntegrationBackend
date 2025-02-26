@@ -27,6 +27,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    // private final UserService userService;
 
     @Value("${jwt.access.token.expiry}")
     private int accessTokenExpiry;
@@ -64,7 +65,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/createUser")
+/*     @PostMapping("/createUser")
     public Map<String, String> createUser(@RequestBody AuthRequest authRequest, HttpServletResponse response) {
         User user = userService.createUser(authRequest.getUsername(), authRequest.getPassword());
 
@@ -82,5 +83,5 @@ public class AuthController {
         tokens.put("refreshToken", refreshToken);
 
         return tokens;
-    }
+    } */
 }
