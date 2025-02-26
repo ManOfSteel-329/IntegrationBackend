@@ -32,10 +32,12 @@ public class User implements UserDetails {
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    // Adjusted constructor: only email is required.
-    public User(String email, String password) {
+
+    public User(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public User() {}

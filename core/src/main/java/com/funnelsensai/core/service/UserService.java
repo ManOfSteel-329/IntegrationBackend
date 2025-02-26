@@ -20,17 +20,27 @@ public class UserService {
         this.companyService = companyService;
     }
 
-    public UserResponseDTO createUser(String email, String password, String companyName) {
+    public UserResponseDTO createUser(String email, String password, String companyName, String firstName, String lastName) {
         if (userRepository.findByEmail(email).isPresent()) {
             throw new RuntimeException("email '" + email + "' is already taken.");
         }
         String encryptedPassword = bCryptPasswordEncoder.encode(password);
-        Company company = companyService.findCompanyByName(companyName)
-                .orElseThrow(() -> new RuntimeException("Company '" + companyName + "' does not exist."));
-        // Using the updated constructor which sets both username and email.
-        User user = new User(email, encryptedPassword);
+
+        //Creating company if Company doesn't exist, else set company name
+        Company company;
+        if (companyService.findCompanyByName(companyName).isEmpty()) {
+            company = new Company();
+            company.setName(companyName);
+            companyService.saveCompany(company);
+        } else {
+            company = companyService.findCompanyByName(companyName).get();
+        }
+
+        // Using the updated constructor which sets both username, email, firstname and lastname.
+        User user = new User(email, encryptedPassword, firstName, lastName);
         user.setCompany(company);
         User savedUser = userRepository.save(user);
-        return new UserResponseDTO(savedUser.getId(), savedUser.getEmail(), savedUser.getCompany().getName());
+        return new UserResponseDTO(savedUser.getId(), savedUser.getEmail(), savedUser.getCompany().getName(),
+                savedUser.getFirstName(), savedUser.getLastName());
     }
 }

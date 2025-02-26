@@ -15,6 +15,8 @@ public class ExampleSecuredController {
         UserResponseDTO userResponseDTO = new UserResponseDTO(
                 user.getId(),
                 user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
                 (user.getCompany() != null) ? user.getCompany().getName() : null
         );
 

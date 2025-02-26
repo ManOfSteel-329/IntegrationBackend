@@ -4,6 +4,8 @@ public class AuthRequest {
     private String email;
     private String password;
     private String companyName;// Added here cause when user is created it needs to belong to a company
+    private String firstName;
+    private String lastName;
 
     // Getters and Setters
 
@@ -30,5 +32,21 @@ public class AuthRequest {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }
