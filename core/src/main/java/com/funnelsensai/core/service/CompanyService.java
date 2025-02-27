@@ -39,10 +39,6 @@ public class CompanyService {
         return companyRepository.findAll();
     }
 
-    public Optional<Company> findCompanyById(Long id) {
-        return companyRepository.findById(id);
-    }
-
     public Company saveCompany(Company company) {
         return companyRepository.save(company);
     }

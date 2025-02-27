@@ -41,15 +41,6 @@ public class CompanyController {
                         .body(new CompanyResponseDTO(null, "Company doesn't exist", List.of())));
     }
 
-    @GetMapping("/byId")
-    public ResponseEntity<CompanyResponseDTO> getCompanyById(@RequestParam Long id) {
-        Optional<Company> foundCompany = companyService.findCompanyById(id);
-        return foundCompany
-                .map(company -> ResponseEntity.ok(new CompanyResponseDTO(company)))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new CompanyResponseDTO(null, "Company doesn't exist", List.of())));
-    }
-
     @GetMapping("/all")
     public ResponseEntity<List<CompanyResponseDTO>> getAllCompanies() {
         List<Company> companies = companyService.findAll();
