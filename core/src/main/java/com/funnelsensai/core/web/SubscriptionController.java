@@ -16,7 +16,9 @@ import java.util.Map;
 import com.stripe.model.SetupIntent;
 import com.funnelsensai.core.domain.Company;
 import com.funnelsensai.core.domain.Role;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin(origins = "https://c24b-47-37-127-19.ngrok-free.app") //for testing purposes
 @RestController
 @RequestMapping("/auth/signup")
 public class SubscriptionController {

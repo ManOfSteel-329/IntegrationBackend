@@ -72,12 +72,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         var corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowCredentials(false);
         corsConfiguration.setAllowedOrigins(List.of(
                 "https://funnelsensai.com", // front-end URL (eg back-end URL: https://api.funnelsensai.com)
                 "https://dev.funnelsensai.com",
                 "http://localhost:5173",
-                "https://3ca1-47-37-127-19.ngrok-free.app" // ngrok URL
+                "*"//for testing purposes
         ));
         corsConfiguration.setAllowedHeaders(Arrays.asList(
                 ORIGIN,
@@ -100,6 +100,8 @@ public class SecurityConfig {
                 ACCESS_CONTROL_REQUEST_HEADERS,
                 ACCESS_CONTROL_ALLOW_CREDENTIALS));
         corsConfiguration.setAllowedMethods(ALLOWED_METHODS);
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedHeader("*");
         corsConfiguration.setMaxAge(3600L);
         var source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration(BASE_PATH, corsConfiguration);
