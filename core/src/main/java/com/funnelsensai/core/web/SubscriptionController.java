@@ -17,8 +17,9 @@ import com.stripe.model.SetupIntent;
 import com.funnelsensai.core.domain.Company;
 import com.funnelsensai.core.domain.Role;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import com.funnelsensai.core.domain.User;
 
-@CrossOrigin(origins = "https://c24b-47-37-127-19.ngrok-free.app") //for testing purposes
+@CrossOrigin(origins = "https://2fca-47-37-127-19.ngrok-free.app") //for testing purposes, change based on provided ngrok url
 @RestController
 @RequestMapping("/auth/signup")
 public class SubscriptionController {
@@ -35,13 +36,13 @@ public class SubscriptionController {
 
     @PostMapping("/create-customer-and-setup-intent")
     public ResponseEntity<?> createCustomerAndSetupIntent(@RequestBody CreateStripeCustomerRequest request) {
-        try {
 
-            if (request.getEmail() == null || request.getName() == null) {
-                return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields"));
+        System.out.println(request);
+        try {
+            if (request.getEmail() == null || request.getName() == null || request.getPaymentMethodType() == null || request.getPaymentMethodType().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Missing required fields or payment method type"));
             }
 
-            // Check if the email already exists
             if (userService.emailExists(request.getEmail())) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Email already exists"));
             }
@@ -61,20 +62,53 @@ public class SubscriptionController {
 
     @PostMapping("/attach-payment-method-and-create-subscription")
     public ResponseEntity<?> attachPaymentMethodAndCreateSubscription(@RequestBody CreateSubscriptionRequest request) {
+        
+        System.out.println(request);
         try {
-            stripeService.attachPaymentMethodToCustomer(request.getCustomerId(), request.getPaymentMethodId());
-            stripeService.setDefaultPaymentMethodForCustomer(request.getCustomerId(), request.getPaymentMethodId());
+            String customerId = request.getCustomerId();
+            String paymentMethodId = request.getPaymentMethodId();
+            String planName = request.getPlanName();
+            String companyName = request.getCompanyName();
+            String email = request.getEmail();
+            String password = request.getPassword();
+            
+            String accountFirstName = request.getAccountFirstName();
+            String accountLastName = request.getAccountLastName();
+            
+            String cardholderFirstName = request.getCardholderFirstName();
+            String cardholderLastName = request.getCardholderLastName();
 
-            Subscription subscription = stripeService.createSubscription(request.getCustomerId(), request.getPlanName());
+            stripeService.attachPaymentMethodToCustomer(customerId, paymentMethodId);
 
-            Company company = companyService.createCompany(request.getCompanyName(), request.getCustomerId(), subscription.getId());
+            stripeService.setDefaultPaymentMethodForCustomer(customerId, paymentMethodId);
 
-            userService.createUser(request.getEmail(), request.getPassword(), request.getFirstName(), request.getLastName(), company, Role.ADMIN);
+            Subscription subscription = stripeService.createSubscription(customerId, planName);
 
-            return ResponseEntity.ok(Map.of("subscriptionId", subscription.getId(), "company", company));
+            Company company = companyService.createCompany(
+                companyName, 
+                customerId,
+                subscription.getId()
+            );
+
+            User user = userService.createUser(
+                email, 
+                password, 
+                accountFirstName, 
+                accountLastName, 
+                company,
+                Role.ADMIN
+            );
+
+            return ResponseEntity.ok().body(Map.of(
+                "subscriptionId", subscription.getId(),
+                "userId", user.getId(),
+                "companyId", company.getId()
+            ));
 
         } catch (StripeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Error attaching payment method and creating subscription: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("error", "Error processing subscription: " + e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Error creating user or company: " + e.getMessage()));
         }
     }
 

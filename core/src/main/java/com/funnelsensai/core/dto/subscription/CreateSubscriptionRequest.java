@@ -17,10 +17,18 @@ public class CreateSubscriptionRequest {
     private String email;
     @NotNull
     private String password;
+    
+    // Account holder's name - used for user creation in database
     @NotNull
-    private String firstName;
+    private String accountFirstName;
     @NotNull
-    private String lastName;
+    private String accountLastName;
+    
+    // Cardholder's name - used for Stripe billing
+    @NotNull
+    private String cardholderFirstName;
+    @NotNull
+    private String cardholderLastName;
 
     @Override
     public String toString() {
@@ -31,8 +39,10 @@ public class CreateSubscriptionRequest {
                 ", companyName='" + companyName + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", accountFirstName='" + accountFirstName + '\'' +
+                ", accountLastName='" + accountLastName + '\'' +
+                ", cardholderFirstName='" + cardholderFirstName + '\'' +
+                ", cardholderLastName='" + cardholderLastName + '\'' +
                 '}';
     }
 
