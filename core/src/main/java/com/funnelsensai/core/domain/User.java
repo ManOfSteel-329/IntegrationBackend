@@ -3,7 +3,6 @@ package com.funnelsensai.core.domain;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.Objects;
 
@@ -12,20 +11,36 @@ import java.util.Objects;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Long id;
-    @Column(unique = true)
-    private String username;
+
+    // Remove username field since email will be used as the identifier.
+    // private String username;
+
     private String password;
-    // private String userApiKey; //todo: this field is going store the user key to
-    // request all info from GoHighLevel API
 
-    public User(String username, String password) {
-        this.username = username;
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    private String firstName;
+    private String lastName;
+    private Boolean isStripeAccountNonExpired;
+    private Boolean isStripeAccountNonLocked;
+    private Boolean isUserOwner;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
+
+
+    public User(String email, String password, String firstName, String lastName) {
+        this.email = email;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
-    public User() {
-    }
+    public User() {}
 
     public Long getId() {
         return id;
@@ -35,8 +50,10 @@ public class User implements UserDetails {
         this.id = id;
     }
 
+    // Now, getUsername() simply returns email.
+    @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override
@@ -59,10 +76,6 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -74,6 +87,63 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Other getters and setters for firstName, lastName, etc.
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Boolean getStripeAccountNonExpired() {
+        return isStripeAccountNonExpired;
+    }
+
+    public void setStripeAccountNonExpired(Boolean stripeAccountNonExpired) {
+        isStripeAccountNonExpired = stripeAccountNonExpired;
+    }
+
+    public Boolean getStripeAccountNonLocked() {
+        return isStripeAccountNonLocked;
+    }
+
+    public void setStripeAccountNonLocked(Boolean stripeAccountNonLocked) {
+        isStripeAccountNonLocked = stripeAccountNonLocked;
+    }
+
+    public Boolean getUserOwner() {
+        return isUserOwner;
+    }
+
+    public void setUserOwner(Boolean userOwner) {
+        isUserOwner = userOwner;
     }
 
     @Override
@@ -91,3 +161,4 @@ public class User implements UserDetails {
         return Objects.hash(id);
     }
 }
+
