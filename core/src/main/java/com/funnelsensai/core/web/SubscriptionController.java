@@ -19,7 +19,7 @@ import com.funnelsensai.core.domain.Role;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.funnelsensai.core.domain.User;
 
-@CrossOrigin(origins = "https://2fca-47-37-127-19.ngrok-free.app") //for testing purposes, change based on provided ngrok url
+@CrossOrigin(origins = "https://6ea0-47-37-127-19.ngrok-free.app") //for testing purposes, change based on provided ngrok url
 @RestController
 @RequestMapping("/auth/signup")
 public class SubscriptionController {

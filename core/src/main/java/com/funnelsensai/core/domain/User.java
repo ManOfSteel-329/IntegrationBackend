@@ -14,7 +14,8 @@ import java.util.Objects;
 @Table(name = "users")
 @Data
 @NoArgsConstructor
-public class User implements UserDetails {
+//removed implements UserDetails
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
