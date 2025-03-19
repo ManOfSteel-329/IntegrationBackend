@@ -1,4 +1,4 @@
-package com.funnelsensai.core.web.request;
+package com.funnelsensai.core.web;
 
 import com.funnelsensai.core.dto.conversations.ConversationDto;
 import com.funnelsensai.core.service.ConversationService;

@@ -16,5 +16,8 @@
     jwt.access.token.expiry=600    
     jwt.refresh.token.expiry=2592000
     goHighLevel.mockToken=Bearer 123
+    goHighLevel.clientId=67406522d42dfd22d8f95a89-m7dfgg2d
+    goHighLevel.clientSecret=be91a4a2-02de-4575-9995-bbf85734d16c
+    goHighLevel.redirectUri=http://localhost:8080/auth/callback
  
 </details>

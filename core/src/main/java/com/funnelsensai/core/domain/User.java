@@ -18,6 +18,7 @@ import java.util.Objects;
 public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Long id;
     @NotNull    
     @Column(unique = true)
@@ -96,3 +97,4 @@ public class User implements UserDetails{
     }
 
 }
+

@@ -3,6 +3,7 @@ package com.funnelsensai.core.service;
 import com.funnelsensai.core.domain.Company;
 import com.funnelsensai.core.domain.Role;
 import com.funnelsensai.core.domain.User;
+import com.funnelsensai.core.dto.ResponseDto.UserResponseDTO;
 import com.funnelsensai.core.repository.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
