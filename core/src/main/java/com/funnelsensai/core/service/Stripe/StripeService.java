@@ -1,15 +1,12 @@
 package com.funnelsensai.core.service.Stripe;
 
 import com.stripe.exception.StripeException;
-import com.stripe.model.Customer;
-import com.stripe.model.PaymentMethod;
-import com.stripe.model.Subscription;
+import com.stripe.model.*;
 import com.stripe.param.*;
 import com.stripe.param.PaymentMethodAttachParams;
 import com.stripe.Stripe;
 import jakarta.annotation.PostConstruct;
 
-import com.stripe.model.SetupIntent;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -88,5 +85,16 @@ public class StripeService {
             .addPaymentMethodType(paymentMethodType)
             .build();
         return SetupIntent.create(params);
+    }
+
+    public PaymentIntent createPaymentIntent(long amount, String currency, String paymentMethodType) throws StripeException {
+        PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+                .setAmount(amount)
+                .setCurrency(currency)
+                .addPaymentMethodType(paymentMethodType)
+                .setCaptureMethod(PaymentIntentCreateParams.CaptureMethod.AUTOMATIC)
+                .build();
+
+        return PaymentIntent.create(params);
     }
 }
